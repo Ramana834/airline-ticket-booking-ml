@@ -1,0 +1,79 @@
+from bs4 import BeautifulSoup as bs
+from urllib.request import urlopen
+import pandas as pd
+
+print("Fetching Data of Different Airports...")
+
+rows = []  # store dict rows here
+
+# -------------------------------
+# 1) Top 100 airports in the world
+# -------------------------------
+url1 = "https://gettocenter.com/airports/top-100-airports-in-world"
+page = urlopen(url1)
+soup = bs(page, "html.parser")
+
+for tr in soup.find_all("tr"):
+    tds = tr.find_all("td")
+    # Need at least 5 columns in that table row
+    if len(tds) < 5:
+        continue
+
+    airport = tds[1].get_text(strip=True)
+    code = tds[2].get_text(strip=True).upper()
+    city = tds[3].get_text(strip=True)
+    country = tds[4].get_text(strip=True)
+
+    # skip empty rows
+    if not code or len(code) < 3:
+        continue
+
+    rows.append({
+        "city": city,
+        "airport": airport,
+        "code": code,
+        "country": country
+    })
+
+# -------------------------------
+# 2) Top airports in India
+# -------------------------------
+url2 = "https://www.worlddata.info/asia/india/airports.php"
+page = urlopen(url2)
+soup = bs(page, "html.parser")
+
+table = soup.find("table")
+if table:
+    for tr in table.find_all("tr")[1:]:  # skip header row
+        tds = tr.find_all("td")
+        if len(tds) < 3:
+            continue
+
+        code = tds[0].get_text(strip=True).upper()
+        airport = tds[1].get_text(strip=True)
+        city = tds[2].get_text(strip=True)
+
+        if not code or len(code) < 3:
+            continue
+
+        rows.append({
+            "city": city,
+            "airport": airport,
+            "code": code,
+            "country": "India"
+        })
+
+# -------------------------------
+# 3) Remove duplicate codes (keep first)
+# -------------------------------
+df = pd.DataFrame(rows)
+df = df.drop_duplicates(subset=["code"], keep="first").reset_index(drop=True)
+
+# -------------------------------
+# 4) Save CSV
+# -------------------------------
+output_file = "airports.csv"
+df.to_csv(output_file, index=False)
+
+print(f"Saved: {output_file}  | Total rows: {len(df)}")
+print("DONE")

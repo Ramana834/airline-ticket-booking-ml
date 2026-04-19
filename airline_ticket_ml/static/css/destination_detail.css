@@ -1,0 +1,117 @@
+.dest-wrap{max-width:1000px;margin:24px auto 60px;padding:0 16px;font-family:Arial,Helvetica,sans-serif}
+.dest-hero{height:320px;border-radius:14px;background-size:cover;background-position:center;overflow:hidden;position:relative}
+.dest-hero-overlay{position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.65),rgba(0,0,0,.25));color:#fff;padding:26px;display:flex;flex-direction:column;justify-content:flex-end;gap:12px}
+.dest-hero h1{margin:0;font-size:38px;font-weight:700}
+.dest-meta{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.rating{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.12);padding:8px 12px;border-radius:10px}
+.stars{letter-spacing:2px}
+.score{font-weight:700}
+.cheap{background:rgba(255,255,255,.12);padding:8px 12px;border-radius:10px}
+.dest-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:6px}
+
+/* ✅ primary button style works for <a> and <button> */
+.btn-primary{
+  background:#e53935;
+  color:#fff;
+  text-decoration:none;
+  padding:12px 16px;
+  border-radius:10px;
+  font-weight:600;
+  display:inline-block;
+}
+a.btn-primary:hover{filter:brightness(.95)}
+button.btn-primary{
+  border:none;
+  cursor:pointer;
+  font-size:14px;
+}
+button.btn-primary:hover{filter:brightness(.95)}
+button.btn-primary:active{transform:translateY(1px)}
+
+.btn-outline{
+  border:1px solid rgba(255,255,255,.7);
+  color:#fff;
+  text-decoration:none;
+  padding:12px 16px;
+  border-radius:10px;
+  font-weight:600;
+  display:inline-block;
+}
+.btn-outline:hover{background:rgba(255,255,255,.12)}
+
+.content-box{margin-top:18px;background:#fff;padding:22px;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,.06)}
+.block{margin-bottom:16px}
+.block p{line-height:1.7;color:#333}
+.block h2{color:#e53935}
+.block ul{padding-left:18px}
+.error-box{margin-top:18px;background:#ffe6e6;padding:14px;border-radius:10px;color:#c62828;text-align:center}
+
+/* Added: emergency + hotels */
+.info-card{
+  background:#fff;
+  border:1px solid #eee;
+  border-radius:14px;
+  padding:16px;
+  margin-top:18px;
+  box-shadow:0 4px 18px rgba(0,0,0,.04);
+}
+.info-grid{
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap:10px;
+  margin-top:10px;
+}
+.info-item{
+  background:#fafafa;
+  border:1px solid #f0f0f0;
+  padding:10px 12px;
+  border-radius:12px;
+}
+
+.hotel-grid{
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap:14px;
+  margin-top:12px;
+}
+.hotel-card{
+  border:1px solid #f0f0f0;
+  border-radius:14px;
+  overflow:hidden;
+  background:#fff;
+}
+.hotel-img{
+  height:120px;
+  background-size:cover;
+  background-position:center;
+}
+.hotel-body{ padding:12px; }
+.hotel-name{ font-weight:700; margin-bottom:6px; }
+.hotel-meta{ color:#666; font-size:13px; display:flex; gap:8px; align-items:center; }
+.hotel-price{ margin-top:8px; font-weight:700; }
+.hotel-review{ margin-top:8px; font-size:13px; color:#555; line-height:1.35; }
+.muted{ color:#777; }
+
+/* ✅ Hotel booking form */
+.hotel-book-form { margin-top: 12px; }
+.book-row {
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin:10px 0;
+  align-items:flex-end;
+}
+.book-row .field { flex:1; min-width:140px; }
+.book-row label { display:block; font-size:12px; color:#666; margin-bottom:4px; }
+.book-row input {
+  width:100%;
+  padding:10px;
+  border:1px solid #ddd;
+  border-radius:8px;
+  box-sizing:border-box;
+}
+.book-row input:focus{
+  outline:none;
+  border-color:#e53935;
+}
+.btn-hotel { width:100%; margin-top:6px; }

@@ -1,0 +1,486 @@
+/* =====================================
+   RESET
+===================================== */
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+body{
+  font-family: Arial, Helvetica, sans-serif;
+  background:#f3f3f3;
+  color:#222;
+}
+
+a{
+  text-decoration:none;
+  color:inherit;
+}
+
+/* =====================================
+   NAVBAR (HOME + SEARCH RESULTS)
+===================================== */
+.navbar,
+.top-nav{
+  height:70px;
+  width:100%;
+  background:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 24px;
+  border-bottom:1px solid #eee;
+}
+
+/* brand */
+.brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-weight:800;
+  color:#e60000;
+  font-size:20px;
+  letter-spacing:1px;
+}
+
+.brand-icon{ font-size:20px; }
+
+.logo-box{
+  width:28px;
+  height:28px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:8px;
+  background:#e60000;
+  color:#fff;
+  font-size:14px;
+}
+
+.brand-text{
+  font-weight:800;
+  color:#e60000;
+}
+
+/* =====================================
+   NAV LINKS
+===================================== */
+.nav-center,
+.menu{
+  display:flex;
+  gap:20px;
+}
+
+.nav-link,
+.menu a{
+  font-size:14px;
+  font-weight:700;
+  padding:8px 10px;
+  border-radius:10px;
+}
+
+.nav-link:hover,
+.menu a:hover{
+  background:#f5f5f5;
+}
+
+.menu a.active{
+  font-weight:800;
+}
+
+/* =====================================
+   BUTTONS / PILLS
+===================================== */
+.pill{
+  color:#e60000;
+  border:2px solid #e60000;
+  padding:8px 16px;
+  border-radius:999px;
+  font-weight:800;
+  font-size:14px;
+}
+
+.pill:hover{
+  background:#fff0f0;
+}
+
+.login-pill{
+  background:#e60000;
+  color:#fff;
+  padding:8px 16px;
+  border-radius:999px;
+  font-weight:800;
+}
+
+/* =====================================
+   ACCOUNT DROPDOWN
+===================================== */
+.account{
+  position:relative;
+}
+
+.acc-btn{
+  background:#fff;
+  border:1px solid #ddd;
+  padding:8px 12px;
+  border-radius:10px;
+  cursor:pointer;
+  font-weight:700;
+}
+
+.acc-menu{
+  position:absolute;
+  right:0;
+  top:46px;
+  width:170px;
+  background:#fff;
+  border:1px solid #eee;
+  border-radius:12px;
+  box-shadow:0 12px 26px rgba(0,0,0,0.12);
+  padding:8px;
+  display:none;
+  z-index:999;
+}
+
+.acc-menu.show{
+  display:block;
+}
+
+.acc-menu a{
+  display:block;
+  padding:10px;
+  border-radius:10px;
+  font-size:14px;
+}
+
+.acc-menu a:hover{
+  background:#f3f3f3;
+}
+
+/* =====================================
+   MESSAGES
+===================================== */
+.msg-wrap{
+  max-width:1100px;
+  margin:12px auto;
+  padding:0 16px;
+}
+
+.msg{
+  padding:10px 12px;
+  border-radius:12px;
+  background:#fff;
+  border:1px solid #eee;
+}
+
+.msg.error{
+  border-color:#ffd2d2;
+  background:#fff3f3;
+  color:#b00020;
+}
+
+.msg.success{
+  border-color:#caffca;
+  background:#f3fff3;
+  color:#0b6b0b;
+}
+
+/* =====================================
+   MAIN CONTAINER
+===================================== */
+main.container{
+  max-width:1200px;
+  margin:0 auto;
+  padding:0 16px;
+}
+
+/* =====================================
+   GLOBAL FORM FIELDS (.field)  (used in other pages)
+===================================== */
+.field{
+  width:100%;
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+
+.field label{
+  font-size:13px;
+  font-weight:700;
+  color:#555;
+}
+
+.field input,
+.field select{
+  width:100%;
+  height:44px;
+  padding:10px 12px;
+  border-radius:10px;
+  border:1px solid #ddd;
+  font-size:14px;
+  background:#fff;
+}
+
+.field input:focus,
+.field select:focus{
+  outline:none;
+  border-color:#e60000;
+}
+
+/* =====================================
+   DATE INPUT (GLOBAL - .field based pages)
+   NOTE: keep simple, no absolute positioning (stable)
+===================================== */
+.field input[type="date"]{
+  padding-right:45px;
+  color-scheme: dark;
+}
+
+.field input[type="date"]::-webkit-calendar-picker-indicator{
+  cursor:pointer;
+  opacity:.9;
+  filter: invert(1);
+}
+
+/* =====================================
+   RETURN DATE FIX (for .field pages)
+===================================== */
+#returnBox,
+#returnBox .field,
+#returnBox input{
+  width:100%;
+}
+
+/* =========================================================
+   HOME PAGE HERO + SEARCH CARD (if your home uses .hero layout)
+   (safe defaults; works with your HTML)
+========================================================= */
+.hero{
+  min-height: calc(100vh - 70px);
+  display:flex;
+  background:#1b1b1f;
+}
+
+/* LEFT IMAGE PANEL */
+.hero-left{
+  flex:1.15;
+  position:relative;
+  background-size:cover;
+  background-position:center;
+}
+
+.hero-left-overlay{
+  position:absolute;
+  inset:0;
+  background:linear-gradient(90deg, rgba(0,0,0,.55), rgba(0,0,0,.25));
+}
+
+.hero-left-text{
+  position:absolute;
+  left:50px;
+  bottom:90px;
+  color:#fff;
+  max-width:520px;
+}
+
+.hero-left-text h1{
+  margin:0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size:54px;
+  line-height:1.05;
+  letter-spacing:.2px;
+}
+
+/* RIGHT FORM PANEL */
+.hero-right{
+  flex:0.95;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:28px;
+}
+
+.form-glow{
+  position:relative;
+  width:min(520px, 92vw);
+}
+
+.glow-border{
+  position:absolute;
+  inset:-2px;
+  border-radius:22px;
+  background:linear-gradient(135deg, rgba(255,0,80,.9), rgba(125,60,255,.8), rgba(0,200,255,.65));
+  filter: blur(0px);
+  z-index:0;
+}
+
+.search-card{
+  position:relative;
+  z-index:1;
+  border-radius:20px;
+  padding:22px 20px;
+  background:rgba(30, 30, 35, .78);
+  border:1px solid rgba(255,255,255,.12);
+  backdrop-filter: blur(10px);
+}
+
+/* trip type (radio) */
+.trip-type{
+  display:flex;
+  gap:14px;
+  margin-bottom:12px;
+}
+
+.radio{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  color:#fff;
+  font-weight:700;
+  font-size:14px;
+}
+
+/* =========================================================
+   ✅ HOME FORM ALIGNMENT (label left + full controls)
+   ✅ DATE ICON FIX for .control (right corner visible)
+========================================================= */
+.search-card .row{
+  display:grid;
+  grid-template-columns: 140px 1fr;
+  align-items:center;
+  gap:14px;
+  margin:14px 0;
+}
+
+.search-card .row label{
+  color:#d9dcff;
+  font-size:13px;
+  font-weight:700;
+  text-align:left;
+}
+
+.search-card .control{
+  width:100%;
+  height:44px;
+  border-radius:10px;
+  border:1px solid rgba(255,255,255,.18);
+  outline:none;
+  background:rgba(255,255,255,.06);
+  color:#fff;
+  padding:0 12px;
+}
+
+.search-card .control::placeholder{
+  color:rgba(255,255,255,.6);
+}
+
+/* ✅ DATE INPUT FIX for HOME (.control) */
+.search-card .control[type="date"]{
+  padding-right:44px;     /* space for calendar icon */
+  color-scheme: dark;     /* dark calendar popup */
+}
+
+.search-card .control[type="date"]::-webkit-calendar-picker-indicator{
+  cursor:pointer;
+  opacity:.95;
+  filter: invert(1);
+}
+
+/* ✅ Return box full width (no small input) */
+#returnBox{
+  width:100%;
+}
+#returnBox .row{
+  width:100%;
+}
+#returnBox input.control{
+  width:100%;
+}
+
+/* search button */
+.btn-search{
+  width:100%;
+  margin-top:10px;
+  height:46px;
+  border:none;
+  border-radius:12px;
+  background:#e60000;
+  color:#fff;
+  font-weight:900;
+  cursor:pointer;
+  font-size:15px;
+}
+
+.btn-search:hover{
+  filter: brightness(0.95);
+}
+
+.note{
+  margin-top:10px;
+  text-align:center;
+  color:rgba(255,255,255,.75);
+  font-size:13px;
+}
+
+/* =====================================
+   RESPONSIVE
+===================================== */
+@media(max-width:900px){
+  .hero{
+    flex-direction:column;
+  }
+  .hero-left{
+    min-height:320px;
+  }
+  .hero-left-text{
+    left:18px;
+    bottom:22px;
+  }
+  .hero-left-text h1{
+    font-size:34px;
+  }
+}
+
+@media(max-width:768px){
+  .nav-center,
+  .menu{
+    display:none;
+  }
+
+  main.container{
+    padding:0 12px;
+  }
+}
+
+/* mobile home form */
+@media (max-width:520px){
+  .search-card .row{
+    grid-template-columns: 1fr;
+    gap:8px;
+  }
+  .search-card .row label{
+    margin-bottom:6px;
+  }
+}
+
+/* Voice controls (global) */
+.voice-btn{
+  border:1px solid #eee;
+  background:#fff;
+  padding:10px 12px;
+  border-radius:12px;
+  cursor:pointer;
+  font-weight:600;
+}
+.voice-btn.listening{
+  border-color:#e85b66;
+  box-shadow:0 0 0 3px rgba(232,91,102,.15);
+}
+.voice-status{
+  font-size:13px;
+  color:#666;
+  overflow:hidden;
+  white-space:nowrap;
+  text-overflow:ellipsis;
+}

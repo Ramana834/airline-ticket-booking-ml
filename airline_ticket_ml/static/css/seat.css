@@ -1,0 +1,70 @@
+*{ box-sizing:border-box; }
+
+.page{ max-width:1200px; margin:20px auto; padding:0 12px; }
+.wrap{ width:100%; }
+
+.head{ display:flex; justify-content:space-between; align-items:flex-start; gap:12px; margin-bottom:12px; }
+.head h2{ margin:0; font-size:22px; }
+.sub{ color:#666; font-size:13px; margin-top:4px; }
+.back{ text-decoration:none; color:#111; font-size:13px; padding:8px 10px; border:1px solid #eee; border-radius:10px; background:#fff; }
+
+.grid{ display:grid; grid-template-columns: 1.4fr 1fr; gap:14px; }
+@media (max-width: 980px){ .grid{ grid-template-columns:1fr; } }
+
+.card{ background:#fff; border:1px solid #eee; border-radius:16px; padding:14px; box-shadow:0 8px 24px rgba(0,0,0,0.05); }
+.card-title{ font-weight:700; margin-bottom:10px; }
+
+.legend{ display:flex; gap:14px; align-items:center; color:#666; font-size:12px; margin-bottom:10px; }
+.dot{ width:10px; height:10px; border-radius:50%; display:inline-block; margin-right:6px; border:1px solid #ddd; }
+.dot.free{ background:#fff; }
+.dot.booked{ background:#e0e0e0; }
+.dot.reserved{ background:#ffe3b3; border-color:#ffb74d; }
+.dot.selected{ background:#111; border-color:#111; }
+
+.plane{ border:1px dashed #ddd; border-radius:16px; padding:14px; background:#fafafa; }
+.row{ display:grid; grid-template-columns: 28px repeat(6, 1fr); gap:8px; align-items:center; margin:8px 0; }
+.row-label{ font-size:12px; color:#666; text-align:center; }
+
+.seat{
+  height:40px;
+  border-radius:10px;
+  border:1px solid #ddd;
+  background:#fff;
+  font-weight:700;
+  cursor:pointer;
+  transition: .12s ease;
+}
+.seat:hover{ transform: translateY(-1px); }
+
+.seat.is-booked{
+  background:#e0e0e0;
+  border-color:#d0d0d0;
+  color:#888;
+  cursor:not-allowed;
+}
+
+.seat.is-reserved{
+  background:#ffe3b3;
+  border-color:#ffb74d;
+  color:#8a5a00;
+  cursor:not-allowed;
+}
+
+.seat.is-mine{
+  background:#d7f5dd;
+  border-color:#4caf50;
+  color:#1b5e20;
+}
+
+.seat.is-picked{ outline:2px solid #111; }
+.seat.is-selected{ background:#111; color:#fff; border-color:#111; }
+
+.note{ color:#666; font-size:12px; margin-bottom:10px; }
+.passengers{ display:flex; flex-direction:column; gap:10px; }
+.p-row{ display:grid; grid-template-columns: 1fr 120px 90px; gap:10px; align-items:center; padding:10px; border:1px solid #eee; border-radius:14px; }
+.p-name{ font-weight:600; }
+.p-seat{ font-size:13px; color:#111; background:#fafafa; border:1px solid #eee; padding:8px 10px; border-radius:10px; text-align:center; }
+.assign{ border:1px solid #111; background:#fff; border-radius:10px; padding:8px 10px; font-weight:600; cursor:pointer; }
+
+.actions{ margin-top:12px; display:flex; justify-content:flex-end; }
+.btn-primary{ border:none; background:#111; color:#fff; padding:10px 14px; border-radius:12px; font-weight:700; cursor:pointer; }

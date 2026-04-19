@@ -1,0 +1,196 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Home | Flight{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
+
+<section class="hero">
+  <div class="hero-left" style="background-image:url('{% static 'images/flight.jpeg' %}')">
+    <div class="hero-left-overlay"></div>
+    <div class="hero-left-text">
+      <h1>Book Domestic<br>and International<br>Flight Tickets</h1>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="form-glow">
+      <div class="glow-border"></div>
+
+      <div class="search-card">
+        <div class="voice-row">
+          {# Voice button moved to navbar (single button). #}
+          <div class="voice-status" id="voiceStatus"></div>
+        </div>
+
+        <form id="searchForm" method="GET"
+              action="{% if user.is_authenticated %}{% url 'flights:results' %}{% else %}{% url 'users:login' %}{% endif %}">
+
+          <div class="trip-type">
+            <label class="radio">
+              <input type="radio" name="TripType" value="1" checked>
+              <span>One-way</span>
+            </label>
+            <label class="radio">
+              <input type="radio" name="TripType" value="2">
+              <span>Round Trip</span>
+            </label>
+          </div>
+
+          <!-- FROM -->
+          <div class="field-row">
+            <label>From:</label>
+            <select name="Origin" id="originSelect" required>
+              <option value="">Select Origin</option>
+              {% for a in airport_options %}
+                <option value="{{ a.code }}">{{ a.label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <!-- TO -->
+          <div class="field-row">
+            <label>To:</label>
+            <select name="Destination" id="destSelect" required>
+              <option value="">Select Destination</option>
+              {% for a in airport_options %}
+                <option value="{{ a.code }}">{{ a.label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="field-row">
+            <label>Departure Date:</label>
+            <input type="date" name="DepartDate" id="departDate" required>
+          </div>
+
+          <div class="field-row" id="returnBox" style="display:none;">
+            <label>Return Date:</label>
+            <input type="date" name="ReturnDate" id="returnDate">
+          </div>
+
+          <div class="field-row">
+            <label>Class:</label>
+            <select name="SeatClass" required>
+              <option value="economy">Economy</option>
+              <option value="business">Business</option>
+              <option value="first">First Class</option>
+            </select>
+          </div>
+
+          <button class="btn-search" type="submit">Search Flight</button>
+
+          {% if not user.is_authenticated %}
+            <p class="note">Login required to search flights</p>
+          {% endif %}
+        </form>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- POPULAR DESTINATIONS -->
+<section class="popular-section">
+  <h2 class="popular-title">Popular Destinations</h2>
+
+  <div class="popular-grid">
+    {% for d in destinations %}
+      <a href="{% url 'flights:destination_detail' d.slug %}" class="popular-card">
+        <img src="{% static d.banner %}" alt="{{ d.title }}">
+        <div class="popular-overlay">
+          <h3>{{ d.title }}</h3>
+          <p class="pop-meta">
+            ★ {{ d.rating }}
+            {% if d.cheapest_price %} • From ₹{{ d.cheapest_price }}{% endif %}
+          </p>
+        </div>
+      </a>
+    {% endfor %}
+  </div>
+</section>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const form = document.getElementById("searchForm");
+
+  const radios = document.querySelectorAll('input[name="TripType"]');
+  const returnBox = document.getElementById("returnBox");
+
+  const departDate = document.getElementById("departDate");
+  const returnDate = document.getElementById("returnDate");
+
+  const originSelect = document.getElementById("originSelect");
+  const destSelect = document.getElementById("destSelect");
+
+  // ✅ min date set
+  const today = new Date();
+  const yyyy = today.getFullYear();
+  const mm = String(today.getMonth() + 1).padStart(2, "0");
+  const dd = String(today.getDate()).padStart(2, "0");
+  const minDate = `${yyyy}-${mm}-${dd}`;
+
+  departDate.min = minDate;
+  returnDate.min = minDate;
+
+  function toggleReturn(){
+    const val = document.querySelector('input[name="TripType"]:checked').value;
+    if(val === "2"){
+      returnBox.style.display = "flex";
+      returnDate.required = true;
+      if(departDate.value){
+        returnDate.min = departDate.value;
+      }
+    }else{
+      returnBox.style.display = "none";
+      returnDate.required = false;
+      returnDate.value = "";
+    }
+  }
+
+  departDate.addEventListener("change", () => {
+    returnDate.min = departDate.value || minDate;
+    if(returnDate.value && departDate.value && returnDate.value < departDate.value){
+      returnDate.value = "";
+    }
+  });
+
+  // ✅ When coming from Destination page: /?dest=XXX
+  const selectedDest = "{{ selected_dest|default:'' }}";
+
+  if (selectedDest) {
+    // set destination
+    destSelect.value = selectedDest;
+
+    // set today's date if empty
+    if (!departDate.value) {
+      departDate.value = minDate;
+    }
+
+    // auto pick first origin if empty
+    if (!originSelect.value && originSelect.options.length > 1) {
+      originSelect.selectedIndex = 1;
+    }
+  }
+
+  // validate
+  form.addEventListener("submit", function(e){
+    if(!originSelect.value || !destSelect.value){
+      e.preventDefault();
+      alert("Please select both Origin and Destination.");
+      return;
+    }
+    if(originSelect.value === destSelect.value){
+      e.preventDefault();
+      alert("Origin and Destination should be different.");
+      return;
+    }
+  });
+
+  radios.forEach(r => r.addEventListener("change", toggleReturn));
+  toggleReturn();
+});
+</script>
+
+{% endblock %}

@@ -1,0 +1,97 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Register | Flight</title>
+  <link rel="stylesheet" href="{% static 'css/auth_pro.css' %}">
+</head>
+<body>
+
+<div class="auth-shell">
+  <div class="auth-card">
+
+    <!-- LEFT SIDE -->
+    <div class="auth-left">
+      <div class="brand-mini">
+        <div class="dot">✈</div>
+        <div>FLIGHT</div>
+      </div>
+
+      <div class="illus">
+        <h2>Create Account</h2>
+        <p>Register to book flights and get your e-ticket instantly.</p>
+      </div>
+    </div>
+
+    <!-- RIGHT SIDE -->
+    <div class="auth-right">
+      <h2>Sign Up</h2>
+      <div class="sub">Fill the details to create your account.</div>
+
+      <!-- Django messages -->
+      {% if messages %}
+        {% for message in messages %}
+          <div class="msg">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+
+      <!-- Form errors (important) -->
+      {% if form and form.errors %}
+        <div class="msg msg-error">
+          Please correct the highlighted fields.
+          <div class="error-box">
+            {{ form.errors }}
+          </div>
+        </div>
+      {% endif %}
+
+      <form method="POST" novalidate>
+        {% csrf_token %}
+
+        <div class="row2">
+          <div class="field">
+            <label>First name</label>
+            <input type="text" name="first_name" value="{{ request.POST.first_name|default:'' }}" required>
+          </div>
+          <div class="field">
+            <label>Last name</label>
+            <input type="text" name="last_name" value="{{ request.POST.last_name|default:'' }}" required>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Username</label>
+          <input type="text" name="username" value="{{ request.POST.username|default:'' }}" required>
+        </div>
+
+        <div class="field">
+          <label>Email</label>
+          <input type="email" name="email" value="{{ request.POST.email|default:'' }}" required>
+        </div>
+
+        <div class="field">
+          <label>Password</label>
+          <input type="password" name="password1" required>
+        </div>
+
+        <div class="field">
+          <label>Confirm password</label>
+          <input type="password" name="password2" required>
+        </div>
+
+        <button class="btn-auth" type="submit">Create Account</button>
+
+        <p class="bottom">
+          Already have an account? <a href="{% url 'users:login' %}">Login</a>
+
+        </p>
+      </form>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

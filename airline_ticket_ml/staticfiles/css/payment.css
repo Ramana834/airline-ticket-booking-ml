@@ -1,0 +1,112 @@
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  font-family: Arial, Helvetica, sans-serif;
+  background:#f3f3f3;
+}
+
+.pay-wrapper{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+
+.pay-card{
+  width:100%;
+  max-width:460px;
+  background:#fff;
+  border-radius:16px;
+  padding:22px;
+  box-shadow:0 12px 30px rgba(0,0,0,0.12);
+}
+
+/* HEADER */
+.pay-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:18px;
+}
+.pay-header h2{
+  margin:0;
+  font-size:22px;
+}
+.cards span{
+  border:1px solid #ddd;
+  padding:4px 8px;
+  border-radius:6px;
+  font-size:11px;
+  margin-left:4px;
+}
+
+/* AMOUNT */
+.amount-box{
+  background:#f6f7f9;
+  border-radius:12px;
+  padding:14px;
+  margin-bottom:18px;
+}
+.amount-box .label{
+  font-size:12px;
+  color:#777;
+}
+.amount{
+  font-size:24px;
+  font-weight:700;
+  margin:6px 0;
+}
+.passengers{
+  font-size:13px;
+  color:#555;
+}
+
+/* FORM */
+.field{
+  margin-bottom:14px;
+}
+.field label{
+  display:block;
+  font-size:13px;
+  margin-bottom:6px;
+  font-weight:600;
+}
+.field input,
+.field select{
+  width:100%;
+  padding:12px;
+  border:1px solid #ddd;
+  border-radius:10px;
+  outline:none;
+  font-size:14px;
+}
+.field input:focus,
+.field select:focus{
+  border-color:#e53935;
+}
+
+.row{
+  display:flex;
+  gap:12px;
+}
+
+/* BUTTON */
+.pay-btn{
+  width:100%;
+  margin-top:10px;
+  padding:14px;
+  background:#e53935;
+  border:none;
+  border-radius:26px;
+  color:#fff;
+  font-size:16px;
+  font-weight:700;
+  cursor:pointer;
+}
+.pay-btn:hover{
+  background:#d32f2f;
+}

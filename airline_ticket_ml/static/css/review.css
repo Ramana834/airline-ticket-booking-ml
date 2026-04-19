@@ -1,0 +1,363 @@
+/* ================= GLOBAL ================= */
+*{ box-sizing:border-box; }
+body{
+  margin:0;
+  font-family: Arial, Helvetica, sans-serif;
+  background:#f3f3f3;
+  color:#222;
+}
+
+/* ================= TOP NAV (optional) ================= */
+.top-nav{
+  height:56px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 18px;
+  border-bottom:1px solid #eee;
+  background:#fff;
+}
+.brand{ display:flex; align-items:center; gap:10px; }
+.logo-box{
+  display:inline-flex;
+  width:28px; height:28px;
+  align-items:center; justify-content:center;
+  border-radius:6px;
+  background:#e53935;
+  color:#fff;
+  font-size:14px;
+}
+.brand-text{ font-weight:800; letter-spacing:1px; color:#e53935; }
+.menu{ display:flex; gap:18px; }
+.menu a{ text-decoration:none; color:#666; font-size:14px; }
+.menu a.active{ color:#111; }
+.right{ color:#666; font-size:14px; }
+
+/* ================= PAGE ================= */
+.page{
+  width:1200px;
+  max-width: calc(100% - 30px);
+  margin:22px auto;
+  padding: 10px 0 30px;
+}
+.grid{
+  display:grid;
+  grid-template-columns: 1fr 520px;
+  gap:22px;
+  align-items:start;
+}
+.left{ min-width:0; }
+.right-col{ min-width:0; }
+
+/* ================= CARD ================= */
+.card{
+  background:#fff;
+  border:1px solid #e8e8e8;
+  border-radius:14px;
+  margin-bottom:14px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+  overflow:hidden;
+}
+
+/* ================= TITLES ================= */
+.card-title{
+  padding:14px 16px;
+  border-bottom:1px solid #eee;
+  font-weight:900;
+  color:#a5007d;
+  font-size:18px;
+}
+.card-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:14px 16px;
+  border-bottom:1px solid #eee;
+}
+.count-pill{
+  background:#f5f5f5;
+  padding:6px 12px;
+  border-radius:999px;
+  font-size:14px;
+  font-weight:900;
+  color:#333;
+}
+
+/* ================= TICKET DETAILS ================= */
+.ticket-row{
+  padding:16px;
+  display:grid;
+  grid-template-columns: 180px 1fr 140px 1fr;
+  gap:14px;
+  align-items:center;
+}
+.airline-name{ font-size:22px; font-weight:900; color:#111; }
+.airline-code{ font-size:12px; color:#777; margin-top:6px; }
+
+.time-block .time{ font-size:18px; font-weight:900; color:#111; }
+.time-block .date{ margin-top:6px; font-size:13px; font-weight:800; color:#333; }
+.time-block .city{ margin-top:6px; font-size:13px; font-weight:900; color:#111; }
+.time-block .airport{ margin-top:4px; font-size:12px; color:#777; }
+
+.duration{ text-align:center; color:#666; }
+.dur{ font-size:13px; font-weight:800; color:#444; margin-bottom:8px; }
+.line{ height:2px; background:#ddd; width:100%; border-radius:2px; }
+.baggage{ padding:0 16px 16px; font-size:13px; color:#666; }
+
+/* ================= FORM INPUTS (single source) ================= */
+.input,
+.field input,
+.field select,
+input,
+select{
+  width:100%;
+  padding:11px 12px;
+  border:1px solid #e5e5e5;
+  border-radius:10px;
+  outline:none;
+  background:#fff;
+  font-size:14px;
+}
+
+.input:focus,
+.field input:focus,
+.field select:focus,
+input:focus,
+select:focus{
+  border-color:#e53935;
+  box-shadow:0 0 0 3px rgba(229,57,53,0.12);
+}
+
+/* labels */
+.field label,
+.field .lbl{
+  display:block;
+  font-size:12px;
+  color:#666;
+  margin-bottom:6px;
+  font-weight:700;
+}
+
+/* hint */
+.hint{
+  font-size:12px;
+  color:#666;
+  margin-top:6px;
+}
+
+/* ================= CONTACT (ONLY contact-grid used) ================= */
+.contact-grid{
+  padding:16px;
+  display:grid;
+  grid-template-columns: 200px 1fr 1fr;
+  gap:14px;
+  align-items:end;
+}
+
+/* ================= PASSENGER ================= */
+#passenger-container{ padding:0 16px 16px; }
+
+.passenger-card{
+  border:1px solid #e9e9ef;
+  background:#fff;
+  border-radius:14px;
+  padding:14px;
+  margin-top:12px;
+}
+
+.p-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  padding-bottom:10px;
+  margin-bottom:12px;
+  border-bottom:1px solid #eee;
+}
+.p-title{ font-size:14px; font-weight:900; color:#111; }
+.p-sub{ font-size:12px; color:#6b7280; margin-top:2px; }
+.p-actions{ display:flex; gap:10px; flex-wrap:wrap; }
+
+/* buttons */
+.btn{
+  border:none;
+  padding:8px 12px;
+  border-radius:10px;
+  cursor:pointer;
+  font-weight:900;
+  font-size:13px;
+}
+.btn:disabled{ opacity:.55; cursor:not-allowed; }
+
+.btn-outline, .btn.ghost{ background:#f3f3f3; color:#222; }
+.btn-danger, .btn.danger{ background:#ff4d6d; color:#fff; }
+
+/* passenger form grid */
+.p-grid{
+  display:grid;
+  grid-template-columns: 1.2fr 0.9fr 0.6fr 0.9fr;
+  gap:12px;
+}
+.span-2{ grid-column: span 2; }
+
+.p-note{ margin-top:10px; font-size:13px; font-weight:900; }
+.p-note.ok{ color:#0a8f2d; }
+.p-note.bad{ color:#b00020; }
+
+/* action buttons */
+.add-btn{
+  width: calc(100% - 32px);
+  margin:0 16px 16px;
+  padding:14px;
+  border-radius:14px;
+  border:none;
+  background:#ff6b7d;
+  color:#fff;
+  font-size:16px;
+  font-weight:900;
+  cursor:pointer;
+}
+.add-btn:hover{ filter:brightness(0.97); }
+
+.pay-btn{
+  width:100%;
+  padding:14px;
+  border-radius:14px;
+  border:none;
+  background:#e53935;
+  color:#fff;
+  font-size:16px;
+  font-weight:900;
+  cursor:pointer;
+}
+.pay-btn:hover{ background:#d32f2f; }
+
+/* ================= RIGHT FARE ================= */
+.right-col .sticky{ position:sticky; top:16px; }
+.mini-note{ margin:0 16px 16px; color:#666; font-size:12px; }
+
+.fare-rows{ margin-top:10px; }
+.fare-row{
+  display:flex;
+  justify-content:space-between;
+  padding:8px 16px;
+  font-size:13px;
+  border-bottom:1px solid #f2f2f2;
+}
+.fare-row span:first-child{ color:#6b7280; }
+
+.fare-total{
+  display:flex;
+  justify-content:space-between;
+  margin:12px 16px 0;
+  padding-top:12px;
+  border-top:1px dashed #e5e7eb;
+  font-size:15px;
+  font-weight:900;
+}
+
+/* ================= RESPONSIVE ================= */
+@media(max-width:1100px){
+  .grid{ grid-template-columns:1fr; }
+  .ticket-row{ grid-template-columns:1fr; }
+  .p-grid{ grid-template-columns:1fr 1fr; }
+  .span-2{ grid-column: span 2; }
+  .contact-grid{ grid-template-columns:1fr 1fr; }
+}
+@media(max-width:980px){
+  .contact-grid{ grid-template-columns:1fr; }
+}
+@media(max-width:520px){
+  .p-grid{ grid-template-columns:1fr; }
+  .span-2{ grid-column: span 1; }
+}
+/* ===== Contact Information (Professional) ===== */
+.ci-grid{
+  padding:16px;
+  display:grid;
+  grid-template-columns: 220px 1fr 1fr;
+  gap:14px;
+  align-items:start;
+}
+
+@media(max-width: 980px){
+  .ci-grid{ grid-template-columns: 1fr; }
+}
+
+.ci-field{ min-width:0; }
+
+.ci-label{
+  display:block;
+  font-size:12px;
+  font-weight:800;
+  color:#6b7280;
+  margin:0 0 6px;
+  letter-spacing:.2px;
+}
+
+.ci-input{
+  width:100%;
+  height:42px;
+  padding:10px 12px;
+  border:1px solid #e5e7eb;
+  border-radius:12px;
+  background:#fff;
+  font-size:14px;
+  outline:none;
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+
+.ci-input:focus{
+  border-color:#e53935;
+  box-shadow:0 0 0 3px rgba(229,57,53,.12);
+}
+
+.ci-help{
+  margin-top:6px;
+  font-size:12px;
+  color:#6b7280;
+  line-height:1.3;
+}
+
+/* input with icon */
+.ci-inputwrap{
+  position:relative;
+}
+
+.ci-status{
+  position:absolute;
+  right:10px;
+  top:50%;
+  transform:translateY(-50%);
+  width:20px;
+  height:20px;
+  border-radius:6px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:900;
+  font-size:13px;
+  opacity:0;
+}
+
+.ci-status.ok{
+  opacity:1;
+  background:rgba(16,185,129,.14);
+  color:#0a8f2d;
+}
+
+.ci-status.bad{
+  opacity:1;
+  background:rgba(239,68,68,.14);
+  color:#b00020;
+}
+
+#mobile.is-ok{
+  border-color: rgba(16,185,129,.6);
+  box-shadow:0 0 0 3px rgba(16,185,129,.12);
+}
+
+#mobile.is-bad{
+  border-color: rgba(239,68,68,.6);
+  box-shadow:0 0 0 3px rgba(239,68,68,.10);
+}

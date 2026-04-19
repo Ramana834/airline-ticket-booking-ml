@@ -1,0 +1,410 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Review | Flight{% endblock %}
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/review.css' %}">
+
+<div class="page">
+  <div class="sr-voice" style="margin-bottom:14px;">
+    {# Voice button moved to navbar (single button). #}
+    <div class="voice-status" id="voiceStatus"></div>
+  </div>
+  <div class="grid">
+
+    <!-- LEFT SIDE -->
+    <div class="left">
+
+      <!-- OUTBOUND Ticket Details -->
+      <section class="card">
+        <div class="card-title">Ticket Details</div>
+
+        <div class="ticket-row">
+          <div class="airline">
+            <div class="airline-name">{{ flight.airline }}</div>
+            <div class="airline-code">{{ flight.flight_no }}</div>
+          </div>
+
+          <div class="time-block">
+            <div class="time">{{ flight.depart }}</div>
+            <div class="date">{{ depart_date }}</div>
+            <div class="city">{{ origin }}</div>
+            <div class="airport">{{ origin_airport }}</div>
+          </div>
+
+          <div class="duration">
+            <div class="dur">{{ duration }}</div>
+            <div class="line"></div>
+          </div>
+
+          <div class="time-block">
+            <div class="time">{{ flight.arrive }}</div>
+            <div class="date">{{ depart_date }}</div>
+            <div class="city">{{ destination }}</div>
+            <div class="airport">{{ dest_airport }}</div>
+          </div>
+        </div>
+
+        <div class="baggage">{{ baggage_text }}</div>
+      </section>
+
+      <!-- RETURN Ticket Details -->
+      {% if return_flight %}
+      <section class="card" style="margin-top:14px;">
+        <div class="card-title">Return Flight</div>
+
+        <div class="ticket-row">
+          <div class="airline">
+            <div class="airline-name">{{ return_flight.airline }}</div>
+            <div class="airline-code">{{ return_flight.flight_no }}</div>
+          </div>
+
+          <div class="time-block">
+            <div class="time">{{ return_flight.depart }}</div>
+            <div class="date">{{ return_flight.depart_date }}</div>
+            <div class="city">{{ return_flight.origin }}</div>
+            <div class="airport">Airport Terminal</div>
+          </div>
+
+          <div class="duration">
+            <div class="dur">Return</div>
+            <div class="line"></div>
+          </div>
+
+          <div class="time-block">
+            <div class="time">{{ return_flight.arrive }}</div>
+            <div class="date">{{ return_flight.depart_date }}</div>
+            <div class="city">{{ return_flight.destination }}</div>
+            <div class="airport">Airport Terminal</div>
+          </div>
+        </div>
+      </section>
+      {% endif %}
+
+      <!-- FORM -->
+      <form method="POST" id="reviewForm">
+        {% csrf_token %}
+
+        <!-- CONTACT INFORMATION -->
+        <section class="card">
+          <div class="card-title">Contact Information</div>
+
+          <div class="ci-grid">
+            <!-- Country Code -->
+            <div class="ci-field">
+              <label class="ci-label" for="country_code">Country code</label>
+              <select name="country_code" id="country_code" class="ci-input">
+                <option value="+91" selected>India (+91)</option>
+                <option value="+1">USA/Canada (+1)</option>
+                <option value="+44">UK (+44)</option>
+                <option value="+61">Australia (+61)</option>
+                <option value="+971">UAE (+971)</option>
+                <option value="+65">Singapore (+65)</option>
+                <option value="+49">Germany (+49)</option>
+                <option value="+33">France (+33)</option>
+                <option value="+39">Italy (+39)</option>
+                <option value="+81">Japan (+81)</option>
+                <option value="+82">Korea (+82)</option>
+              </select>
+            </div>
+
+            <!-- Mobile -->
+            <div class="ci-field">
+              <label class="ci-label" for="mobile">Mobile number</label>
+              <div class="ci-inputwrap">
+                <input
+                  type="tel"
+                  name="mobile"
+                  id="mobile"
+                  class="ci-input"
+                  placeholder="10-digit number"
+                  inputmode="numeric"
+                  autocomplete="tel"
+                  maxlength="10"
+                  required
+                />
+                <span id="mobile_status" class="ci-status"></span>
+              </div>
+              <div class="ci-help" id="mobile_help">Enter 10 digits. Example: 9876543210</div>
+            </div>
+
+            <!-- Email -->
+            <div class="ci-field">
+              <label class="ci-label" for="email">Email</label>
+              <input
+                type="email"
+                name="email"
+                id="email"
+                class="ci-input"
+                placeholder="name@example.com"
+                autocomplete="email"
+                required
+              />
+              <div class="ci-help">We’ll send the ticket to this email.</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- PASSENGER DETAILS -->
+        <section class="card">
+          <div class="card-head">
+            <div class="card-title" style="border:0;padding:0;">Passenger Details</div>
+            <div class="count-pill"><span id="passCount">1</span> Passengers</div>
+          </div>
+
+          <div id="passenger-container">
+
+            <!-- Passenger 1 -->
+            <div class="passenger-card" data-index="1">
+              <div class="p-head">
+                <div class="p-title-wrap">
+                  <div class="p-title">Adult 1</div>
+                  <div class="p-sub">Passenger details</div>
+                </div>
+
+                <div class="p-actions">
+                  <button type="button" class="btn btn-outline" onclick="updatePassenger(this)">Update</button>
+                  <button type="button" class="btn btn-danger" onclick="removePassenger(this)" disabled>Remove</button>
+                </div>
+              </div>
+
+              <div class="p-grid">
+                <div class="field">
+                  <label>Passenger Name</label>
+                  <input type="text" name="passenger_name_0" placeholder="Full Name" required>
+                </div>
+
+                <div class="field">
+                  <label>Gender</label>
+                  <select name="gender" required>
+                    <option value="MALE">MALE</option>
+                    <option value="FEMALE">FEMALE</option>
+                  </select>
+                </div>
+
+                <div class="field">
+                  <label>Age</label>
+                  <input type="number" name="age" placeholder="Age" min="1" max="120" required>
+                </div>
+
+                <div class="field">
+                  <label>Nationality</label>
+                  <input type="text" name="nationality" placeholder="Indian" required>
+                </div>
+
+                <div class="field span-2">
+                  <label>Passport / ID</label>
+                  <input type="text" name="passport_id" placeholder="Aadhar / Passport Number" required>
+                </div>
+              </div>
+
+              <div class="p-note" id="note-1"></div>
+            </div>
+
+          </div>
+
+          <button type="button" class="add-btn" onclick="addPassenger()">+ ADD ADULT</button>
+        </section>
+
+        <button type="submit" class="pay-btn" data-confirm-booking>Proceed to payment</button>
+      </form>
+
+    </div>
+
+    <!-- RIGHT SIDE -->
+    <div class="right-col">
+      <section class="card sticky">
+        <div class="card-title">Fare Summary</div>
+
+        <div class="fare-rows">
+          <div class="fare-row">
+            <span>Outbound Fare</span>
+            <span>₹ <span id="outFare">{{ outbound_base }}</span></span>
+          </div>
+
+          {% if return_flight %}
+          <div class="fare-row">
+            <span>Return Fare</span>
+            <span>₹ <span id="retFare">{{ return_base }}</span></span>
+          </div>
+          {% else %}
+            <span id="retFare" style="display:none;">0</span>
+          {% endif %}
+
+          <div class="fare-row">
+            <span>Charges</span>
+            <span>₹ <span id="charges">{{ charges }}</span></span>
+          </div>
+        </div>
+
+        <div class="fare-total">
+          <span>Total</span>
+          <span>₹ <span id="totalFare">{{ total_fare }}</span></span>
+        </div>
+
+        <div class="mini-note">Total updates automatically based on passengers.</div>
+      </section>
+    </div>
+
+  </div>
+</div>
+
+<!-- ✅ ONE SCRIPT ONLY (no duplicates) -->
+<script>
+/* ===== Mobile Validation (Professional) ===== */
+const mobileEl = document.getElementById("mobile");
+const helpEl = document.getElementById("mobile_help");
+const statusEl = document.getElementById("mobile_status");
+
+function setMobileState(state, msg){
+  mobileEl.classList.remove("is-ok","is-bad");
+  statusEl.classList.remove("ok","bad");
+  statusEl.textContent = "";
+
+  if(state === "ok"){
+    mobileEl.classList.add("is-ok");
+    statusEl.classList.add("ok");
+    statusEl.textContent = "✓";
+    helpEl.textContent = "Valid mobile number.";
+  }else if(state === "bad"){
+    mobileEl.classList.add("is-bad");
+    statusEl.classList.add("bad");
+    statusEl.textContent = "!";
+    helpEl.textContent = msg || "Mobile must be exactly 10 digits.";
+  }else{
+    helpEl.textContent = "Enter 10 digits. Example: 9876543210";
+  }
+}
+
+mobileEl.addEventListener("input", () => {
+  mobileEl.value = mobileEl.value.replace(/\D/g, "").slice(0, 10);
+
+  if(mobileEl.value.length === 0) setMobileState("idle");
+  else if(mobileEl.value.length < 10) setMobileState("bad", "Enter 10 digits (numbers only).");
+  else setMobileState("ok");
+});
+setMobileState("idle");
+
+/* ===== Passenger + Fare ===== */
+let passengerCount = 1;
+
+function num(val){
+  const x = parseFloat(val);
+  return isNaN(x) ? 0 : x;
+}
+
+function updateCountAndFare() {
+  document.getElementById("passCount").textContent = passengerCount;
+
+  const outFare = num(document.getElementById("outFare").textContent);
+  const retFare = num(document.getElementById("retFare").textContent);
+  const charges = num(document.getElementById("charges").textContent);
+
+  const total = (outFare + retFare + charges) * passengerCount;
+  document.getElementById("totalFare").textContent = total.toFixed(1);
+}
+
+function renumberPassengers(){
+  const cards = document.querySelectorAll(".passenger-card");
+  passengerCount = cards.length;
+
+  cards.forEach((card, idx) => {
+    const n = idx + 1;
+    card.dataset.index = n;
+    card.querySelector(".p-title").textContent = `Adult ${n}`;
+    card.querySelector(".p-note").id = `note-${n}`;
+    const removeBtn = card.querySelector(".btn.btn-danger");
+    removeBtn.disabled = (n === 1);
+  });
+
+  updateCountAndFare();
+}
+
+function addPassenger() {
+  const container = document.getElementById("passenger-container");
+  const next = container.querySelectorAll(".passenger-card").length + 1;
+
+  const card = document.createElement("div");
+  card.className = "passenger-card";
+  card.dataset.index = next;
+
+  card.innerHTML = `
+    <div class="p-head">
+      <div class="p-title-wrap">
+        <div class="p-title">Adult ${next}</div>
+        <div class="p-sub">Passenger details</div>
+      </div>
+
+      <div class="p-actions">
+        <button type="button" class="btn btn-outline" onclick="updatePassenger(this)">Update</button>
+        <button type="button" class="btn btn-danger" onclick="removePassenger(this)">Remove</button>
+      </div>
+    </div>
+
+    <div class="p-grid">
+      <div class="field">
+        <label>Passenger Name</label>
+        <input type="text" name="passenger_name_0" placeholder="Full Name" required>
+      </div>
+
+      <div class="field">
+        <label>Gender</label>
+        <select name="gender" required>
+          <option value="MALE">MALE</option>
+          <option value="FEMALE">FEMALE</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Age</label>
+        <input type="number" name="age" placeholder="Age" min="1" max="120" required>
+      </div>
+
+      <div class="field">
+        <label>Nationality</label>
+        <input type="text" name="nationality" placeholder="Indian" required>
+      </div>
+
+      <div class="field span-2">
+        <label>Passport / ID</label>
+        <input type="text" name="passport_id" placeholder="Aadhar / Passport Number" required>
+      </div>
+    </div>
+
+    <div class="p-note" id="note-${next}"></div>
+  `;
+
+  container.appendChild(card);
+  renumberPassengers();
+}
+
+function removePassenger(btn){
+  btn.closest(".passenger-card").remove();
+  renumberPassengers();
+}
+
+function updatePassenger(btn){
+  const card = btn.closest(".passenger-card");
+  const name = card.querySelector('input[name="passenger_name_0"]').value.trim();
+  const age = card.querySelector('input[name="age"]').value.trim();
+  const nationality = card.querySelector('input[name="nationality"]').value.trim();
+  const pid = card.querySelector('input[name="passport_id"]').value.trim();
+
+  const note = card.querySelector(".p-note");
+  if(!name || !age || !nationality || !pid){
+    note.textContent = "Please fill all fields before updating.";
+    note.classList.remove("ok");
+    note.classList.add("bad");
+    return;
+  }
+
+  note.textContent = `Saved ✓ (${name}, ${age})`;
+  note.classList.remove("bad");
+  note.classList.add("ok");
+}
+
+updateCountAndFare();
+</script>
+
+{% endblock %}

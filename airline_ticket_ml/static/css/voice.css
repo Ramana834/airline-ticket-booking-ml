@@ -1,0 +1,30 @@
+/* static/css/voice.css */
+
+/* Single, clean voice button in navbar (top-right). */
+.nav-actions{ display:flex; align-items:center; gap:10px; }
+
+.nav-voice-btn{
+  border:1px solid #e5e7eb;
+  background:#fff;
+  border-radius:999px;
+  width:36px; height:36px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  font-size:16px;
+}
+
+.nav-voice-btn.listening{
+  border-color:#e53935;
+  box-shadow:0 0 0 3px rgba(229,57,53,.15);
+}
+
+.voice-status{
+  font-size:12px;
+  color:#666;
+  max-width:240px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}

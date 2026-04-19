@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Delay Prediction | Flight{% endblock %}
+
+{% block content %}
+
+<link rel=\"stylesheet\" href=\"{% static 'css/search_results.css' %}">
+<div class="container mt-4">
+  <h3 class="mb-3">Flight Delay Prediction</h3>
+
+  <form method="post" class="card p-3">
+    {% csrf_token %}
+
+    <div class="row">
+      <div class="col-md-3 mb-2">
+        <label class="small text-muted">Airline</label>
+        <select class="form-control" name="airline" required>
+          <option value="">Select</option>
+          {% for a in airlines %}
+            <option value="{{ a }}">{{ a }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="col-md-3 mb-2">
+        <label class="small text-muted">Origin</label>
+        <select class="form-control" name="origin" required>
+          <option value="">Select</option>
+          {% for s in airports %}
+            <option value="{{ s }}">{{ s }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="col-md-3 mb-2">
+        <label class="small text-muted">Destination</label>
+        <select class="form-control" name="destination" required>
+          <option value="">Select</option>
+          {% for s in airports %}
+            <option value="{{ s }}">{{ s }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="col-md-3 mb-2">
+        <label class="small text-muted">Distance (km)</label>
+        <input class="form-control" name="distance" placeholder="e.g., 550" required>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-3 mb-2">
+        <label class="small text-muted">Departure Time</label>
+        <input class="form-control" name="dep_time" placeholder="HH:MM (24h)" required>
+      </div>
+      <div class="col-md-9 d-flex align-items-end mb-2">
+        <button class="btn btn-danger" type="submit">Predict Delay</button>
+      </div>
+    </div>
+
+    {% if prediction != None %}
+      <div class="alert alert-info mt-3 mb-0">
+        <b>Predicted delay:</b> {{ prediction }} minutes
+      </div>
+    {% endif %}
+  </form>
+
+  <p class="text-muted mt-3">
+    Model idea: Use historical flight + delay data and regression/classification to predict delay levels.
+    Your provided notebook drops irrelevant columns and encodes airline/origin/destination before training. fileciteturn1file7
+  </p>
+</div>
+{% endblock %}

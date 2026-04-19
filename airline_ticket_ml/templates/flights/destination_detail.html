@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ title }} | Destination{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/destination_detail.css' %}">
+
+<div class="dest-wrap">
+
+  <div class="dest-hero" style="background-image:url('{% static banner %}');">
+    <div class="dest-hero-overlay">
+      <h1>{{ title }}</h1>
+
+      <div class="dest-meta">
+        <div class="rating">
+          <span class="stars">★★★★★</span>
+          <span class="score">{{ rating }}</span>
+        </div>
+
+        {% if cheapest_price %}
+          <div class="cheap">Cheapest from <b>₹{{ cheapest_price }}</b></div>
+        {% else %}
+          <div class="cheap">Cheapest fare not available</div>
+        {% endif %}
+      </div>
+
+      <div class="dest-actions">
+        <a class="btn-primary" href="{{ book_url }}">✈️ Book Flight to {{ title }}</a>
+        {% if wiki_url %}
+          <a class="btn-outline" href="{{ wiki_url }}" target="_blank" rel="noreferrer">Read Wikipedia</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- ✅ Emergency / Helpline Numbers -->
+  <div class="info-card">
+    <h3>Emergency & Helpline ({{ emergency_country|upper }})</h3>
+    <div class="info-grid">
+      <div class="info-item"><b>General:</b> {{ emergency.general }}</div>
+      {% if emergency.police %}<div class="info-item"><b>Police:</b> {{ emergency.police }}</div>{% endif %}
+      {% if emergency.ambulance %}<div class="info-item"><b>Ambulance:</b> {{ emergency.ambulance }}</div>{% endif %}
+      {% if emergency.fire %}<div class="info-item"><b>Fire:</b> {{ emergency.fire }}</div>{% endif %}
+    </div>
+    <div class="muted" style="margin-top:8px;">Numbers are for reference. Always follow local guidance.</div>
+  </div>
+
+  <!-- ✅ Hotel Recommendations -->
+  <div class="info-card">
+    <h3>Recommended Hotels</h3>
+
+    {% if hotels %}
+      <div class="hotel-grid">
+        {% for h in hotels %}
+          <div class="hotel-card">
+            <div class="hotel-img" style="background-image:url('{% static h.image %}');"></div>
+
+            <div class="hotel-body">
+              <div class="hotel-name">{{ h.name }}</div>
+
+              <div class="hotel-meta">
+                <span class="hotel-rating">⭐ {{ h.rating }}</span>
+                <span class="hotel-rev">({{ h.reviews }} reviews)</span>
+              </div>
+
+              <div class="hotel-price">₹{{ h.price }} / night</div>
+              <div class="hotel-review">“{{ h.review }}”</div>
+
+              <!-- ✅ Hotel Booking Form (inside each hotel card) -->
+              <form method="post" action="{% url 'bookings:book_hotel' %}" class="hotel-book-form">
+                {% csrf_token %}
+
+                <input type="hidden" name="destination_slug" value="{{ slug }}">
+                <input type="hidden" name="destination_code" value="{{ book_url|cut:'/?dest=' }}">
+                <input type="hidden" name="hotel_name" value="{{ h.name }}">
+                <input type="hidden" name="hotel_city" value="">
+                <input type="hidden" name="price_per_night" value="{{ h.price }}">
+
+                <div class="book-row">
+                  <div class="field">
+                    <label>Check-in</label>
+                    <input type="date" name="checkin_date" required>
+                  </div>
+
+                  <div class="field">
+                    <label>Check-out</label>
+                    <input type="date" name="checkout_date" required>
+                  </div>
+
+                  <div class="field">
+                    <label>Rooms</label>
+                    <input type="number" name="rooms" value="1" min="1" required>
+                  </div>
+                </div>
+
+                <button type="submit" class="btn-primary btn-hotel">Book Hotel</button>
+              </form>
+              <!-- ✅ End form -->
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="muted">No hotel data available for this destination.</p>
+    {% endif %}
+  </div>
+
+</div>
+{% endblock %}

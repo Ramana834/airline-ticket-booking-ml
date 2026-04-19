@@ -1,0 +1,16 @@
+
+/* static/css/route_reference.css */
+.route-wrap{ max-width:980px; margin:26px auto; padding:0 14px; }
+.route-form{ display:grid; grid-template-columns: 1fr 1fr auto; gap:12px; align-items:end; background:#fff; border:1px solid #eee; padding:14px; border-radius:14px; }
+.field label{ display:block; font-size:13px; color:#555; margin-bottom:6px; }
+.field input{ width:100%; padding:10px 12px; border:1px solid #ddd; border-radius:10px; }
+.btn{ padding:10px 14px; border-radius:12px; border:0; background:#e53935; color:#fff; font-weight:700; }
+.route-card{ margin-top:14px; background:#fff; border:1px solid #eee; border-radius:14px; padding:14px; }
+.route-card.bad{ border-color:#f2b8b5; background:#fff7f7; }
+.dist{ margin-top:8px; font-size:15px; }
+#map{ height:420px; border-radius:14px; overflow:hidden; margin-top:14px; border:1px solid #eee; }
+.muted{ color:#666; }
+@media (max-width:760px){
+  .route-form{ grid-template-columns: 1fr; }
+  .btn{ width:100%; }
+}

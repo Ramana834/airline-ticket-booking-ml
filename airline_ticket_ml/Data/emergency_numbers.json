@@ -1,0 +1,74 @@
+{
+  "india": {
+    "general": "112",
+    "police": "100",
+    "ambulance": "108",
+    "fire": "101"
+  },
+  "usa": {
+    "general": "911",
+    "police": "911",
+    "ambulance": "911",
+    "fire": "911"
+  },
+  "canada": {
+    "general": "911",
+    "police": "911",
+    "ambulance": "911",
+    "fire": "911"
+  },
+  "uk": {
+    "general": "999",
+    "police": "999",
+    "ambulance": "999",
+    "fire": "999"
+  },
+  "australia": {
+    "general": "000",
+    "police": "000",
+    "ambulance": "000",
+    "fire": "000"
+  },
+  "uae": {
+    "general": "999",
+    "police": "999",
+    "ambulance": "998",
+    "fire": "997"
+  },
+  "singapore": {
+    "general": "999",
+    "police": "999",
+    "ambulance": "995",
+    "fire": "995"
+  },
+  "nepal": {
+    "general": "112",
+    "police": "100",
+    "ambulance": "102",
+    "fire": "101"
+  },
+  "brazil": {
+    "general": "190",
+    "police": "190",
+    "ambulance": "192",
+    "fire": "193"
+  },
+  "indonesia": {
+    "general": "112",
+    "police": "110",
+    "ambulance": "118",
+    "fire": "113"
+  },
+  "maldives": {
+    "general": "119",
+    "police": "119",
+    "ambulance": "102",
+    "fire": "118"
+  },
+  "italy": {
+    "general": "112",
+    "police": "113",
+    "ambulance": "118",
+    "fire": "115"
+  }
+}

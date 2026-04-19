@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Notifications | Flight{% endblock %}
+{% block content %}
+
+<div style="max-width:900px;margin:20px auto;padding:0 16px;">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+    <h2 style="margin:0;">Notifications</h2>
+    <a href="{% url 'notifications:mark_all_read' %}" style="text-decoration:none;color:#e53935;font-weight:700;">Mark all read</a>
+  </div>
+
+  {% if items %}
+    {% for n in items %}
+      <div style="background:#fff;border:1px solid #eee;border-radius:14px;padding:14px 16px;margin-bottom:10px;">
+        <div style="display:flex;justify-content:space-between;gap:10px;">
+          <div>
+            <div style="font-weight:800;">{{ n.title }}</div>
+            <div style="color:#555;margin-top:6px;white-space:pre-line;">{{ n.message }}</div>
+            <div style="color:#999;font-size:12px;margin-top:8px;">{{ n.created_at }}</div>
+          </div>
+          {% if not n.is_read %}
+            <span style="align-self:flex-start;background:#e53935;color:#fff;font-size:12px;padding:6px 10px;border-radius:999px;">NEW</span>
+          {% endif %}
+        </div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <div style="background:#fff;border:1px solid #eee;border-radius:14px;padding:20px;text-align:center;color:#777;">
+      No notifications yet.
+    </div>
+  {% endif %}
+</div>
+
+{% endblock %}

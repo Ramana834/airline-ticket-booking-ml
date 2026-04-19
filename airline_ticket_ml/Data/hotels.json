@@ -1,0 +1,158 @@
+{
+  "italy": [
+    {
+      "name": "Hotel Roma Centrale",
+      "price": 120,
+      "rating": 4.6,
+      "reviews": 1840,
+      "review": "Great location near city center, clean rooms.",
+      "image": "images/italy.jpg"
+    },
+    {
+      "name": "Florence Riverside Stay",
+      "price": 95,
+      "rating": 4.4,
+      "reviews": 980,
+      "review": "Beautiful view and friendly staff.",
+      "image": "images/italy.jpg"
+    },
+    {
+      "name": "Milan Business Suites",
+      "price": 150,
+      "rating": 4.7,
+      "reviews": 2105,
+      "review": "Perfect for business trips, fast check-in.",
+      "image": "images/italy.jpg"
+    }
+  ],
+  "america": [
+    {
+      "name": "NYC Midtown Hotel",
+      "price": 170,
+      "rating": 4.5,
+      "reviews": 3050,
+      "review": "Walkable to major attractions.",
+      "image": "images/america.jpeg"
+    },
+    {
+      "name": "LA Sunset Inn",
+      "price": 130,
+      "rating": 4.3,
+      "reviews": 1210,
+      "review": "Cozy place with great service.",
+      "image": "images/america.jpeg"
+    },
+    {
+      "name": "Chicago Riverfront Stay",
+      "price": 110,
+      "rating": 4.4,
+      "reviews": 1565,
+      "review": "Nice rooms and easy transport access.",
+      "image": "images/america.jpeg"
+    }
+  ],
+  "brazil": [
+    {
+      "name": "Rio Beach Resort",
+      "price": 140,
+      "rating": 4.6,
+      "reviews": 2200,
+      "review": "Amazing beach access and breakfast.",
+      "image": "images/brazil.jpg"
+    },
+    {
+      "name": "Sao Paulo City Hotel",
+      "price": 100,
+      "rating": 4.2,
+      "reviews": 900,
+      "review": "Good value and central.",
+      "image": "images/brazil.jpg"
+    },
+    {
+      "name": "Copacabana View Suites",
+      "price": 160,
+      "rating": 4.7,
+      "reviews": 3100,
+      "review": "Fantastic views and clean rooms.",
+      "image": "images/brazil.jpg"
+    }
+  ],
+  "nepal": [
+    {
+      "name": "Kathmandu Heritage Hotel",
+      "price": 60,
+      "rating": 4.5,
+      "reviews": 1450,
+      "review": "Warm hospitality and local vibe.",
+      "image": "images/nepal.jpg"
+    },
+    {
+      "name": "Pokhara Lake Resort",
+      "price": 80,
+      "rating": 4.6,
+      "reviews": 1320,
+      "review": "Relaxing lake view and calm atmosphere.",
+      "image": "images/nepal.jpg"
+    },
+    {
+      "name": "Everest Trek Lodge",
+      "price": 45,
+      "rating": 4.3,
+      "reviews": 640,
+      "review": "Great for trekkers, helpful staff.",
+      "image": "images/nepal.jpg"
+    }
+  ],
+  "indonesia": [
+    {
+      "name": "Bali Ocean Villa",
+      "price": 110,
+      "rating": 4.7,
+      "reviews": 2750,
+      "review": "Beautiful villa and peaceful stay.",
+      "image": "images/indonesia.jpg"
+    },
+    {
+      "name": "Jakarta City Stay",
+      "price": 70,
+      "rating": 4.2,
+      "reviews": 880,
+      "review": "Clean rooms and easy commute.",
+      "image": "images/indonesia.jpg"
+    },
+    {
+      "name": "Ubud Forest Retreat",
+      "price": 90,
+      "rating": 4.6,
+      "reviews": 1620,
+      "review": "Nature vibes and excellent food.",
+      "image": "images/indonesia.jpg"
+    }
+  ],
+  "maldives": [
+    {
+      "name": "Lagoon Luxury Resort",
+      "price": 380,
+      "rating": 4.8,
+      "reviews": 1900,
+      "review": "Once-in-a-lifetime water villa experience.",
+      "image": "images/maldives.jpg"
+    },
+    {
+      "name": "Coral Island Hotel",
+      "price": 290,
+      "rating": 4.7,
+      "reviews": 1200,
+      "review": "Great snorkeling and friendly staff.",
+      "image": "images/maldives.jpg"
+    },
+    {
+      "name": "Sunset Beach Bungalows",
+      "price": 240,
+      "rating": 4.6,
+      "reviews": 980,
+      "review": "Beautiful sunsets and clean rooms.",
+      "image": "images/maldives.jpg"
+    }
+  ]
+}

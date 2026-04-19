@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}My Bookings | Flight{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/my_bookings.css' %}">
+
+<div class="bk-page">
+  <div class="bk-top">
+    <div>
+      <h1 class="bk-title">My Bookings</h1>
+      <p class="bk-subtitle">Manage your trips, print tickets, or cancel bookings.</p>
+    </div>
+
+    <div class="bk-actions">
+      <a class="bk-btn ghost" href="{% url 'flights:home' %}">Home</a>
+    </div>
+  </div>
+
+  <div class="bk-wrap">
+    {% if bookings %}
+      {% for booking in bookings %}
+        {% with f=booking.flight %}
+        <div class="bk-row">
+
+          <!-- DATE -->
+          <div class="bk-date">
+            <div class="bk-day">{{ f.date|date:"d" }}</div>
+            <div class="bk-dow">{{ f.date|date:"D" }}</div>
+            <div class="bk-mon">{{ f.date|date:"M'y" }}</div>
+          </div>
+
+          <!-- ROUTE -->
+          <div class="bk-mid">
+            <div class="bk-route">{{ f.source }} → {{ f.destination }}</div>
+            <div class="bk-sub">
+              {{ f.airline }} · {{ booking.passenger_name }}
+            </div>
+
+            <div class="bk-meta">
+              <span class="bk-chip">
+                🕒 {{ f.departure_time|time:"H:i" }} - {{ f.arrival_time|time:"H:i" }}
+              </span>
+
+              <span class="bk-chip">
+                💺 {{ booking.seat_no|default:"Not selected" }}
+              </span>
+            </div>
+          </div>
+
+          <!-- REF -->
+          <div class="bk-ref">
+            <div class="bk-ref-label">Ref</div>
+            <div class="bk-ref-code">{{ booking.id|stringformat:"06d" }}</div>
+          </div>
+
+          <!-- STATUS -->
+          <div class="bk-status">
+            {% if booking.status == "confirmed" %}
+              <span class="pill ok">CONFIRMED</span>
+            {% elif booking.status == "pending" %}
+              <span class="pill warn">PENDING</span>
+            {% else %}
+              <span class="pill bad">CANCELLED</span>
+            {% endif %}
+          </div>
+
+          <!-- ACTIONS -->
+          <div class="bk-right">
+
+            <a class="icon-btn" href="{% url 'bookings:ticket' booking.id %}">🖨️</a>
+            <a class="icon-btn" href="{% url 'bookings:ticket_pdf' booking.id %}">📄</a>
+
+            {% if booking.status != "cancelled" %}
+              <a class="bk-btn danger"
+                 href="{% url 'bookings:cancel_booking' booking.id %}"
+                 onclick="return confirm('Cancel this booking?');">
+                Cancel
+              </a>
+            {% else %}
+              <span class="bk-btn disabled">Cancelled</span>
+            {% endif %}
+          </div>
+
+        </div>
+
+        <!-- ✅ REFUND TRACKING -->
+        {% if booking.status == "cancelled" %}
+        <div class="refund-box">
+
+          <h4>Refund Tracking</h4>
+
+          <p><strong>Amount:</strong> ₹{{ booking.refund_amount }}</p>
+          <p><strong>Status:</strong> {{ booking.get_refund_status_display }}</p>
+          <p><strong>Reference:</strong> {{ booking.refund_ref_id }}</p>
+
+          <!-- Progress Bar -->
+          <div class="progress">
+            <div class="progress-bar 
+              {% if booking.refund_status == 'processed' %}done{% endif %}">
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Auto process after 5 seconds -->
+        {% if booking.refund_status == "pending" %}
+        <script>
+          setTimeout(function() {
+            window.location.href = "{% url 'bookings:process_refund' booking.id %}";
+          }, 5000);
+        </script>
+        {% endif %}
+
+        {% endif %}
+
+        {% endwith %}
+      {% endfor %}
+    {% else %}
+      <div class="empty">
+        <h3>No bookings yet</h3>
+        <a class="bk-btn" href="{% url 'flights:home' %}">Search Flights</a>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+{% endblock %}

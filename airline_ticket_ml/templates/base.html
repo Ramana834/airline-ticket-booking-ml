@@ -1,0 +1,198 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{% block title %}Flight{% endblock %}</title>
+
+  <link rel="icon" type="image/svg+xml" href="{% static 'images/favicon.svg' %}">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <link rel="stylesheet" href="{% static 'css/voice.css' %}">
+  <link rel="stylesheet"
+        href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+        crossorigin="anonymous">
+
+  <!-- Bell + Toast CSS -->
+  <style>
+    .nav-bell{ position:relative; text-decoration:none; font-size:18px; margin-right:12px; }
+    .bell-badge{
+      position:absolute; top:-8px; right:-10px;
+      background:#e53935; color:#fff;
+      border-radius:999px; padding:2px 6px;
+      font-size:12px; line-height:1;
+    }
+    .toast{
+      position:fixed; right:18px; bottom:18px;
+      background:#111; color:#fff;
+      padding:12px 14px; border-radius:12px;
+      box-shadow:0 10px 30px rgba(0,0,0,.18);
+      max-width:340px; z-index:9999;
+    }
+    .toast .t-title{ font-weight:700; margin-bottom:4px; }
+    .toast .t-msg{ font-size:14px; opacity:.95; }
+  </style>
+
+  {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+
+  <!-- TOP NAVBAR -->
+  <header class="top-nav">
+    <div class="brand">
+      <span class="logo-box">✈</span>
+      <span class="brand-text">FLIGHT</span>
+    </div>
+
+    <nav class="menu">
+      <a href="{% url 'flights:home' %}" class="{% if request.path == '/' %}active{% endif %}">Home</a>
+
+      {% if user.is_authenticated %}
+        <a href="{% url 'bookings:my_bookings' %}">My Bookings</a>
+        <a href="{% url 'flights:route_reference' %}">Airport Route</a>
+        <a href="{% url 'notifications:my_notifications' %}">Alerts</a>
+
+        <!-- ✅ ML Features (namespace = ml) -->
+        <a href="{% url 'ml:fare_trend' %}">Fare Trend</a>
+        <a href="{% url 'ml:recommendations' %}">Recommendations</a>
+        <a href="{% url 'ml:delay' %}">Delay Prediction</a>
+        <a href="{% url 'ml:chatbot' %}">AI Assistant</a>
+
+        {% if user.is_staff %}
+          <a href="{% url 'ml:admin_dashboard' %}">Admin Dashboard</a>
+        {% endif %}
+      {% else %}
+        <a href="{% url 'users:login' %}">My Bookings</a>
+        <a href="{% url 'flights:route_reference' %}">Airport Route</a>
+      {% endif %}
+    </nav>
+
+    <div class="right">
+      {% if user.is_authenticated %}
+
+        <div class="nav-actions">
+          <!-- Bell icon (top-right corner, near account) -->
+          <a href="{% url 'notifications:my_notifications' %}" class="nav-bell" title="Notifications">
+            🔔 <span id="bellBadge" class="bell-badge" style="display:none;">0</span>
+          </a>
+
+          <!-- Single Voice button (no field-level mic icons) -->
+          <button type="button" class="nav-voice-btn" data-voice-btn title="Voice">🎤</button>
+
+          <span id="voiceStatus" class="voice-status"></span>
+
+          <div class="account">
+          <button type="button" class="acc-btn" id="accBtn">My Account ▾</button>
+          <div class="acc-menu" id="accMenu">
+            <a href="{% url 'bookings:my_bookings' %}">My Bookings</a>
+        <a href="{% url 'flights:route_reference' %}">Airport Route</a>
+            <a href="{% url 'users:logout' %}">Logout</a>
+          </div>
+          </div>
+        </div>
+
+      {% else %}
+        <a class="login-pill" href="{% url 'users:login' %}">Login</a>
+      {% endif %}
+    </div>
+  </header>
+
+  <!-- Flash messages -->
+  {% if messages %}
+    <div style="max-width:1200px;margin:10px auto;padding:0 12px;">
+      {% for message in messages %}
+        <div style="padding:10px 12px;border-radius:10px;margin:6px 0;background:#fff;border:1px solid #eee;color:#222;">
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  {% block content %}{% endblock %}
+
+  <script src="{% static 'js/main.js' %}"></script>
+
+  <!-- Bell + Toast JS -->
+  {% if user.is_authenticated %}
+  <script>
+  (function(){
+    const badge = document.getElementById("bellBadge");
+    let lastCount = null;
+    let pollTimer = null;
+
+    function showToast(title, message){
+      const t = document.createElement("div");
+      t.className = "toast";
+      t.innerHTML = `<div class="t-title">${title}</div><div class="t-msg">${message}</div>`;
+      document.body.appendChild(t);
+      setTimeout(()=> t.remove(), 5000);
+    }
+
+    function maybeBrowserPopup(title, message){
+      if (!("Notification" in window)) return;
+
+      if (Notification.permission === "default"){
+        Notification.requestPermission().then(()=>{});
+        return;
+      }
+      if (Notification.permission === "granted"){
+        new Notification(title, { body: message });
+      }
+    }
+
+    async function updateBell(){
+      try{
+        const r = await fetch("{% url 'notifications:unread_count' %}", {credentials:"same-origin"});
+        const data = await r.json();
+        const c = data.count || 0;
+
+        if (badge){
+          if (c > 0){
+            badge.style.display = "inline-block";
+            badge.textContent = c;
+          } else {
+            badge.style.display = "none";
+          }
+        }
+
+        // new notification arrived -> show toast
+        if (lastCount !== null && c > lastCount){
+          const lr = await fetch("{% url 'notifications:latest_unread' %}", {credentials:"same-origin"});
+          const latest = await lr.json();
+          if (latest.has){
+            showToast(latest.title, latest.message);
+            maybeBrowserPopup(latest.title, latest.message);
+          }
+        }
+
+        lastCount = c;
+      } catch(e){}
+    }
+
+    function scheduleBellPolling() {
+      if (pollTimer) {
+        clearInterval(pollTimer);
+        pollTimer = null;
+      }
+
+      if (document.hidden) return;
+
+      updateBell();
+      pollTimer = setInterval(updateBell, 10000);
+    }
+
+    scheduleBellPolling();
+    document.addEventListener("visibilitychange", scheduleBellPolling);
+  })();
+  </script>
+  {% endif %}
+
+  {% block extra_js %}{% endblock %}
+
+  <script src="{% static 'js/voice_booking.js' %}"></script>
+
+  <script src="{% static 'js/voice_fields.js' %}"></script>
+</body>
+</html>

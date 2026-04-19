@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Dashboard | Flight{% endblock %}
+
+{% block content %}
+<div style="max-width:1200px;margin:20px auto;padding:0 12px;">
+
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px;">
+    <div>
+      <h2 style="margin:0;">Admin Dashboard</h2>
+      <div style="color:#666;font-size:13px;margin-top:4px;">Analytics for bookings & revenue</div>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:14px;">
+    <div style="background:#fff;border:1px solid #eee;border-radius:16px;padding:14px;box-shadow:0 8px 24px rgba(0,0,0,0.05);">
+      <div style="color:#666;font-size:12px;">Total Bookings</div>
+      <div style="font-size:24px;font-weight:800;">{{ total_bookings }}</div>
+    </div>
+    <div style="background:#fff;border:1px solid #eee;border-radius:16px;padding:14px;box-shadow:0 8px 24px rgba(0,0,0,0.05);">
+      <div style="color:#666;font-size:12px;">Confirmed</div>
+      <div style="font-size:24px;font-weight:800;">{{ confirmed }}</div>
+    </div>
+    <div style="background:#fff;border:1px solid #eee;border-radius:16px;padding:14px;box-shadow:0 8px 24px rgba(0,0,0,0.05);">
+      <div style="color:#666;font-size:12px;">Cancelled</div>
+      <div style="font-size:24px;font-weight:800;">{{ cancelled }}</div>
+    </div>
+    <div style="background:#fff;border:1px solid #eee;border-radius:16px;padding:14px;box-shadow:0 8px 24px rgba(0,0,0,0.05);">
+      <div style="color:#666;font-size:12px;">Revenue</div>
+      <div style="font-size:24px;font-weight:800;">₹ {{ revenue|floatformat:0 }}</div>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px;">
+    <div style="background:#fff;border:1px solid #eee;border-radius:16px;padding:14px;box-shadow:0 8px 24px rgba(0,0,0,0.05);">
+      <div style="font-weight:800;margin-bottom:8px;">Most Booked Routes</div>
+      <canvas id="routesChart" height="150"></canvas>
+    </div>
+    <div style="background:#fff;border:1px solid #eee;border-radius:16px;padding:14px;box-shadow:0 8px 24px rgba(0,0,0,0.05);">
+      <div style="font-weight:800;margin-bottom:8px;">Popular Airlines</div>
+      <canvas id="airlineChart" height="150"></canvas>
+    </div>
+  </div>
+
+  <div style="background:#fff;border:1px solid #eee;border-radius:16px;padding:14px;margin-top:12px;box-shadow:0 8px 24px rgba(0,0,0,0.05);">
+    <div style="font-weight:800;margin-bottom:8px;">Revenue per Month</div>
+    <canvas id="revChart" height="110"></canvas>
+  </div>
+  <div class="stat-card">
+    <h4>Total Refunded</h4>
+    <p>
+        ₹{{ total_refunded.total|default:"0.00" }}
+    </p>
+</div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const topRoutes = {{ top_routes|safe }};
+  const topAirlines = {{ top_airlines|safe }};
+  const revByMonth = {{ rev_by_month|safe }};
+
+  new Chart(document.getElementById('routesChart'), {
+    type: 'bar',
+    data: {
+      labels: topRoutes.map(x => `${x.flight__source}→${x.flight__destination}`),
+      datasets: [{ label: 'Bookings', data: topRoutes.map(x => x.c) }]
+    },
+    options: { responsive:true, plugins:{ legend:{ display:false } } }
+  });
+
+  new Chart(document.getElementById('airlineChart'), {
+    type: 'doughnut',
+    data: {
+      labels: topAirlines.map(x => x.flight__airline),
+      datasets: [{ label: 'Bookings', data: topAirlines.map(x => x.c) }]
+    },
+    options: { responsive:true }
+  });
+
+  new Chart(document.getElementById('revChart'), {
+    type: 'line',
+    data: {
+      labels: revByMonth.map(x => x.month),
+      datasets: [{ label: 'Revenue (₹)', data: revByMonth.map(x => x.revenue) }]
+    },
+    options: { responsive:true }
+  });
+</script>
+
+{% endblock %}

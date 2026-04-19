@@ -1,0 +1,90 @@
+*{ box-sizing:border-box; }
+body{
+  margin:0;
+  font-family: Arial, Helvetica, sans-serif;
+  background:#ffffff;
+  color:#222;
+}
+
+/* top nav */
+.top-nav{
+  height:56px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 18px;
+  border-bottom:1px solid #eee;
+  background:#fff;
+}
+.brand{ display:flex; align-items:center; gap:10px; }
+.logo-box{
+  display:inline-flex;
+  width:28px; height:28px;
+  align-items:center; justify-content:center;
+  border-radius:6px;
+  background:#e53935;
+  color:#fff;
+  font-size:14px;
+}
+.brand-text{
+  font-weight:700;
+  letter-spacing:1px;
+  color:#e53935;
+}
+.menu{ display:flex; gap:18px; }
+.menu a{ text-decoration:none; color:#666; font-size:14px; }
+.menu a.active{ color:#111; }
+.right{ color:#666; font-size:14px; }
+
+/* center content */
+.center{
+  height: calc(100vh - 56px);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  gap:14px;
+}
+
+.tick{
+  width:70px;
+  height:70px;
+  border-radius:50%;
+  background:#1ee34a;
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:42px;
+  font-weight:900;
+}
+
+.msg{
+  font-size:18px;
+  color:#2e7d32;
+  font-weight:700;
+  text-align:center;
+}
+
+.ref{
+  font-size:13px;
+  color:#444;
+}
+.route{
+  margin-left:6px;
+  color:#666;
+}
+
+.btn{
+  margin-top:4px;
+  padding:10px 16px;
+  border:1px solid #2c7be5;
+  color:#2c7be5;
+  background:#fff;
+  text-decoration:none;
+  border-radius:4px;
+  font-size:13px;
+}
+.btn:hover{
+  background:#f3f8ff;
+}

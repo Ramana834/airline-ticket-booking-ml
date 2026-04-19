@@ -1,0 +1,24 @@
+.flash-wrap{ max-width:1100px; margin:14px auto 0; padding:0 18px; }
+.flash{
+  display:flex; align-items:center; gap:12px;
+  border:1px solid #e5e7eb; background:#fff;
+  border-radius:12px; padding:12px 14px;
+  box-shadow:0 8px 22px rgba(0,0,0,.05);
+}
+.flash-icon{
+  width:26px; height:26px; border-radius:8px;
+  display:flex; align-items:center; justify-content:center;
+  font-weight:800;
+  background:#f3f4f6; color:#111;
+}
+.flash-text{ flex:1; font-size:14px; color:#111; }
+.flash-success{ border-color:#c8e6c9; }
+.flash-success .flash-icon{ background:#e8f5e9; color:#2e7d32; }
+
+.btn{
+  display:inline-flex; align-items:center; justify-content:center;
+  height:42px; padding:0 16px; border-radius:12px;
+  font-weight:800; text-decoration:none; cursor:pointer;
+}
+.btn-outline{ border:1px solid #e53935; color:#e53935; background:#fff; }
+.btn-outline:disabled{ opacity:.6; cursor:not-allowed; }

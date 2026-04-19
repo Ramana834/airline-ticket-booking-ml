@@ -1,0 +1,211 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Search Results | Flight{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/search_results.css' %}">
+
+<section class="sr-summary">
+  <div class="sr-summary-inner">
+    <div class="sr-s-item">
+      <div class="sr-s-small">From</div>
+      <div class="sr-s-big">{{ origin }}</div>
+    </div>
+
+    <div class="sr-s-arrow">→</div>
+
+    <div class="sr-s-item">
+      <div class="sr-s-small">To</div>
+      <div class="sr-s-big">{{ destination }}</div>
+    </div>
+
+    <div class="sr-s-item">
+      <div class="sr-s-small">Depart</div>
+      <div class="sr-s-big">{{ depart_date }}</div>
+    </div>
+
+    <div class="sr-s-item">
+      <div class="sr-s-small">Class</div>
+      <div class="sr-s-big">{{ seat_class|title }}</div>
+    </div>
+
+    <a class="sr-modify" href="{% url 'flights:home' %}">Modify Search</a>
+  </div>
+</section>
+
+<div class="sr-wrap">
+
+  <aside class="sr-filters">
+    <div class="sr-filter-card">
+      <h3>Filter Results</h3>
+
+      <div class="sr-block">
+        <div class="sr-block-title">Max Price: ₹ <span id="selectedPriceLabel">{{ max_price|default:"0" }}</span></div>
+        <input id="priceRange" class="sr-range" type="range"
+               min="{{ min_price|default:0 }}"
+               max="{{ max_price|default:0 }}"
+               value="{{ max_price|default:0 }}">
+        <div class="sr-range-row">
+          <span>₹ {{ min_price|default:"0" }}</span>
+          <span>₹ {{ max_price|default:"0" }}</span>
+        </div>
+      </div>
+
+      <div class="sr-block">
+        <div class="sr-block-title">Departure Time</div>
+        <div class="sr-chip-grid">
+          <button type="button" class="sr-chip time-btn" data-type="depart" data-range="before6">Before 6 AM</button>
+          <button type="button" class="sr-chip time-btn" data-type="depart" data-range="6to12">6 AM - 12 PM</button>
+          <button type="button" class="sr-chip time-btn" data-type="depart" data-range="12to18">12 PM - 6 PM</button>
+          <button type="button" class="sr-chip time-btn" data-type="depart" data-range="after18">After 6 PM</button>
+        </div>
+      </div>
+
+      <div class="sr-block">
+        <div class="sr-block-title">Arrival Time</div>
+        <div class="sr-chip-grid">
+          <button type="button" class="sr-chip time-btn" data-type="arrive" data-range="before6">Before 6 AM</button>
+          <button type="button" class="sr-chip time-btn" data-type="arrive" data-range="6to12">6 AM - 12 PM</button>
+          <button type="button" class="sr-chip time-btn" data-type="arrive" data-range="12to18">12 PM - 6 PM</button>
+          <button type="button" class="sr-chip time-btn" data-type="arrive" data-range="after18">After 6 PM</button>
+        </div>
+      </div>
+
+      <a id="resetFilters" class="sr-reset" href="#">Reset Filters</a>
+    </div>
+  </aside>
+
+  <main class="sr-results">
+
+    <div class="sr-head">
+      <div class="sr-sort">
+        <span>Sort By:</span>
+        <select id="sortSelect" class="sr-select">
+          <option value="depart_asc">Departure (Early)</option>
+          <option value="depart_desc">Departure (Late)</option>
+          <option value="price_asc">Price (Low)</option>
+          <option value="price_desc">Price (High)</option>
+        </select>
+      </div>
+
+      <div class="sr-cols">
+        <span>Depart</span>
+        <span>Arrive</span>
+        <span>Price</span>
+      </div>
+    </div>
+
+    <div id="flightList">
+
+      {% if is_connecting %}
+        {% for p in connecting_pairs %}
+          <div class="sr-card flight-card" data-flight-card
+               data-price="{{ p.total_price }}"
+               data-depart="{{ p.leg1.departure_time|stringformat:'s'|slice:':5' }}"
+               data-arrive="{{ p.leg2.arrival_time|stringformat:'s'|slice:':5' }}">
+
+            <div class="sr-row">
+
+              <div class="sr-airline">
+                <div class="sr-airline-name">{{ p.leg1.airline }} + {{ p.leg2.airline }}</div>
+                <div class="sr-airline-code">1 Stop ({{ p.leg1.destination_code }})</div>
+              </div>
+
+              <div class="sr-time">
+                <div class="sr-time-big">{{ p.leg1.departure_time|stringformat:"s"|slice:":5" }}</div>
+                <div class="sr-time-small">{{ p.leg1.source }} ({{ p.leg1.source_code }})</div>
+              </div>
+
+              <div class="sr-mid">→</div>
+
+              <div class="sr-time">
+                <div class="sr-time-big">{{ p.leg2.arrival_time|stringformat:"s"|slice:":5" }}</div>
+                <div class="sr-time-small">{{ p.leg2.destination }} ({{ p.leg2.destination_code }})</div>
+              </div>
+
+              <div class="sr-price">₹ {{ p.total_price }}</div>
+
+              {% if request.session.trip_type == "2" %}
+                {% if request.GET.phase == "return" %}
+                  <a class="sr-book" href="{% url 'bookings:select_return' p.leg1.id %}" data-book-btn>
+                    Select Return
+                  </a>
+                {% else %}
+                  <a class="sr-book" href="{% url 'bookings:select_outbound' p.leg1.id %}" data-book-btn>
+                    Select Outbound
+                  </a>
+                {% endif %}
+              {% else %}
+                <a class="sr-book" href="{% url 'bookings:review' p.leg1.id %}" data-book-btn>
+                  Book Flight
+                </a>
+              {% endif %}
+
+            </div>
+          </div>
+        {% endfor %}
+
+      {% elif flights %}
+        {% for flight in flights %}
+          <div class="sr-card flight-card" data-flight-card
+               data-price="{{ flight.display_price }}"
+               data-depart="{{ flight.departure_time|stringformat:'s'|slice:':5' }}"
+               data-arrive="{{ flight.arrival_time|stringformat:'s'|slice:':5' }}">
+
+            <div class="sr-row">
+
+              <div class="sr-airline">
+                <div class="sr-airline-name">{{ flight.airline }}</div>
+                <div class="sr-airline-code">{{ flight.flight_no|default:"" }}</div>
+              </div>
+
+              <div class="sr-time">
+                <div class="sr-time-big">{{ flight.departure_time|stringformat:"s"|slice:":5" }}</div>
+                <div class="sr-time-small">{{ flight.source }} ({{ flight.source_code }})</div>
+              </div>
+
+              <div class="sr-mid">→</div>
+
+              <div class="sr-time">
+                <div class="sr-time-big">{{ flight.arrival_time|stringformat:"s"|slice:":5" }}</div>
+                <div class="sr-time-small">{{ flight.destination }} ({{ flight.destination_code }})</div>
+              </div>
+
+              <div class="sr-price">₹ {{ flight.display_price }}</div>
+
+              {% if request.session.trip_type == "2" %}
+                {% if request.GET.phase == "return" %}
+                  <a class="sr-book" href="{% url 'bookings:select_return' flight.id %}" data-book-btn>
+                    Select Return
+                  </a>
+                {% else %}
+                  <a class="sr-book" href="{% url 'bookings:select_outbound' flight.id %}" data-book-btn>
+                    Select Outbound
+                  </a>
+                {% endif %}
+              {% else %}
+                <a class="sr-book" href="{% url 'bookings:review' flight.id %}" data-book-btn>
+                  Book Flight
+                </a>
+              {% endif %}
+
+            </div>
+          </div>
+        {% endfor %}
+
+      {% else %}
+        <div id="noFlightsMsg" class="sr-empty">No flights found for selected route/date.</div>
+      {% endif %}
+
+    </div>
+
+    <div id="noFlightsMsg" class="sr-empty" style="display:none;">No flights found for filters.</div>
+
+  </main>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/search_results.js' %}"></script>
+{% endblock %}

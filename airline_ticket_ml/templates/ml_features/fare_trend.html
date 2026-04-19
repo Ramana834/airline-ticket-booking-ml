@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Fare Trend | Flight{% endblock %}
+
+{% block content %}
+
+<link rel=\"stylesheet\" href=\"{% static 'css/fare_trend.css' %}">
+<div class="container mt-4">
+
+  <!-- Flash Messages -->
+  {% if messages %}
+    <div class="flash-wrap">
+      {% for message in messages %}
+        <div class="flash flash-{{ message.tags|default:'info' }}">
+          <span class="flash-icon">
+            {% if "success" in message.tags %}✓{% elif "error" in message.tags %}!{% else %}i{% endif %}
+          </span>
+          <div class="flash-text">{{ message }}</div>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <h3 class="mb-3">Dynamic Fare Prediction</h3>
+
+  <form method="get" class="row g-2 align-items-end">
+    <div class="col-md-3">
+      <label class="form-label mb-1">Origin</label>
+      <input class="form-control" name="origin" placeholder="e.g., HYD" value="{{ origin }}">
+    </div>
+
+    <div class="col-md-3">
+      <label class="form-label mb-1">Destination</label>
+      <input class="form-control" name="destination" placeholder="e.g., DEL" value="{{ destination }}">
+    </div>
+
+    <div class="col-md-3">
+      <label class="form-label mb-1">Date</label>
+      <input class="form-control" type="date" name="date" value="{{ depart_date }}">
+    </div>
+
+    <div class="col-md-3">
+      <button class="btn btn-danger w-100" type="submit">Predict</button>
+    </div>
+  </form>
+
+  {% if trend %}
+    <div class="card mt-4 shadow-sm border-0 p-4">
+
+      <h5 class="mb-3">Prediction Result</h5>
+
+      <div class="mb-2">
+        <strong>Prediction:</strong>
+        {% if trend == "RISE" %}
+          <span class="badge bg-danger ms-2">Price likely to rise</span>
+        {% else %}
+          <span class="badge bg-success ms-2">Price likely to fall</span>
+        {% endif %}
+      </div>
+
+      <div class="mb-2">
+        <strong>Confidence:</strong> {{ confidence }}%
+      </div>
+
+      {% if sample_price %}
+        <div class="mb-3">
+          <strong>Current best price:</strong> ₹{{ sample_price }}
+        </div>
+      {% endif %}
+
+      <hr>
+
+      {% if set_alert %}
+        <button class="btn btn-outline-success" type="button" disabled>
+          Alert Created ✓
+        </button>
+        <div class="text-muted small mt-2">
+          You will be notified if the price drops.
+        </div>
+      {% else %}
+        <a class="btn btn-outline-danger"
+           href="{% url 'ml:fare_trend' %}?origin={{ origin }}&destination={{ destination }}&date={{ depart_date }}&set_alert=1">
+          Create Price-Drop Alert
+        </a>
+        <div class="text-muted small mt-2">
+          Get notified when the fare becomes cheaper.
+        </div>
+      {% endif %}
+
+    </div>
+  {% endif %}
+
+</div>
+{% endblock %}

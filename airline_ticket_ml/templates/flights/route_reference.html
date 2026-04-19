@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Airport Route | Flight{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/route_reference.css' %}">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<div class="route-wrap">
+  <h2>Airport Route (Reference)</h2>
+  <p class="muted">Type city name or IATA code (example: HYD, DEL, Mumbai). Map uses OpenStreetMap geocoding.</p>
+
+  <form method="get" class="route-form">
+    <div class="field">
+      <label>Origin</label>
+      <input type="text" name="origin" value="{{ origin }}" placeholder="HYD / Hyderabad" required>
+    </div>
+    <div class="field">
+      <label>Destination</label>
+      <input type="text" name="destination" value="{{ destination }}" placeholder="DEL / Delhi" required>
+    </div>
+    <button class="btn" type="submit">Show Route</button>
+  </form>
+
+  {% if route %}
+    <div class="route-card">
+      <div><b>From:</b> {{ route.from.city }} ({{ route.from.code }}) - {{ route.from.name }}</div>
+      <div><b>To:</b> {{ route.to.city }} ({{ route.to.code }}) - {{ route.to.name }}</div>
+      <div class="dist"><b>Distance:</b> <span id="distKm">Calculating…</span></div>
+    </div>
+
+    <div id="map" style="min-height: 380px;"></div>
+
+    <script>
+      const routeFrom = {
+        city: "{{ route.from.city|escapejs }}",
+        code: "{{ route.from.code|escapejs }}",
+        name: "{{ route.from.name|escapejs }}",
+        country: "{{ route.from.country|escapejs }}"
+      };
+
+      const routeTo = {
+        city: "{{ route.to.city|escapejs }}",
+        code: "{{ route.to.code|escapejs }}",
+        name: "{{ route.to.name|escapejs }}",
+        country: "{{ route.to.country|escapejs }}"
+      };
+
+      async function geocodeCandidates(candidates) {
+        for (const q of candidates) {
+          try {
+            const url = `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(q)}`;
+            const res = await fetch(url, {
+              headers: {
+                "Accept": "application/json"
+              }
+            });
+
+            if (!res.ok) {
+              continue;
+            }
+
+            const data = await res.json();
+            if (data && data.length) {
+              return {
+                lat: parseFloat(data[0].lat),
+                lon: parseFloat(data[0].lon),
+                query: q
+              };
+            }
+          } catch (e) {
+            console.log("Geocode failed for:", q, e);
+          }
+        }
+        return null;
+      }
+
+      function haversineKm(a, b) {
+        const R = 6371;
+        const dLat = (b.lat - a.lat) * Math.PI / 180;
+        const dLon = (b.lon - a.lon) * Math.PI / 180;
+        const la1 = a.lat * Math.PI / 180;
+        const la2 = b.lat * Math.PI / 180;
+        const x = Math.sin(dLat / 2) ** 2 + Math.cos(la1) * Math.cos(la2) * Math.sin(dLon / 2) ** 2;
+        return 2 * R * Math.asin(Math.sqrt(x));
+      }
+
+      (async function () {
+        const fromCandidates = [
+          `${routeFrom.name}, ${routeFrom.city}, ${routeFrom.country}`,
+          `${routeFrom.city}, ${routeFrom.country}`,
+          `${routeFrom.code} airport, ${routeFrom.city}, ${routeFrom.country}`,
+          `${routeFrom.city} airport`,
+          `${routeFrom.code}`
+        ];
+
+        const toCandidates = [
+          `${routeTo.name}, ${routeTo.city}, ${routeTo.country}`,
+          `${routeTo.city}, ${routeTo.country}`,
+          `${routeTo.code} airport, ${routeTo.city}, ${routeTo.country}`,
+          `${routeTo.city} airport`,
+          `${routeTo.code}`
+        ];
+
+        const a1 = await geocodeCandidates(fromCandidates);
+        const a2 = await geocodeCandidates(toCandidates);
+
+        if (!a1 || !a2) {
+          document.getElementById("distKm").textContent = "Not available";
+
+          const mapDiv = document.getElementById("map");
+          mapDiv.innerHTML = `
+            <div style="padding:20px;color:#666;">
+              Live map could not load for this route.<br><br>
+              Try city names like <b>${routeFrom.city}</b> and <b>${routeTo.city}</b>.
+            </div>
+          `;
+          return;
+        }
+
+        const km = haversineKm(a1, a2);
+        document.getElementById("distKm").textContent = km.toFixed(0) + " km (approx)";
+
+        const map = L.map("map").setView(
+          [(a1.lat + a2.lat) / 2, (a1.lon + a2.lon) / 2],
+          5
+        );
+
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+          maxZoom: 18,
+          attribution: "&copy; OpenStreetMap"
+        }).addTo(map);
+
+        const p1 = [a1.lat, a1.lon];
+        const p2 = [a2.lat, a2.lon];
+
+        L.marker(p1).addTo(map).bindPopup(`${routeFrom.city} (${routeFrom.code})`);
+        L.marker(p2).addTo(map).bindPopup(`${routeTo.city} (${routeTo.code})`);
+
+        const line = L.polyline([p1, p2]).addTo(map);
+        map.fitBounds(line.getBounds(), { padding: [30, 30] });
+
+        setTimeout(() => {
+          map.invalidateSize();
+        }, 300);
+      })();
+    </script>
+
+  {% elif origin or destination %}
+    <div class="route-card bad">
+      Route not found. Try using IATA code (HYD, DEL) or exact city name available in airports.csv.
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

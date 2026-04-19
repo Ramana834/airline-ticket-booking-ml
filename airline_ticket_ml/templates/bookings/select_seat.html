@@ -1,0 +1,186 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Select Seat | Flight{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/seat.css' %}">
+
+<div class="page">
+  <div class="wrap">
+    <div class="head">
+      <div>
+        <h2>Select Seats</h2>
+        <div class="sub">{{ flight.source }} → {{ flight.destination }} | {{ flight.date }}</div>
+      </div>
+      <a class="back" href="javascript:history.back()">← Back</a>
+    </div>
+
+    <form method="post" class="grid">
+      {% csrf_token %}
+
+      <!-- LEFT: SEAT MAP -->
+      <section class="card">
+        <div class="card-title">Seat Map</div>
+
+        <div class="legend">
+          <span class="dot free"></span> Available
+          <span class="dot reserved"></span> Reserved
+          <span class="dot booked"></span> Booked
+          <span class="dot selected"></span> Selected
+        </div>
+
+        <div class="plane">
+          {% for r in rows %}
+            <div class="row">
+              <div class="row-label">{{ r }}</div>
+              {% for c in cols %}
+                {% with code=r|stringformat:'s'|add:c %}
+                  <button type="button"
+                          class="seat {% if code in booked %}is-booked{% endif %}"
+                          data-seat="{{ code }}"
+                          {% if code in booked %}disabled{% endif %}>
+                    {{ c }}
+                  </button>
+                {% endwith %}
+              {% endfor %}
+            </div>
+          {% endfor %}
+        </div>
+      </section>
+
+      <!-- RIGHT: PASSENGERS -->
+      <section class="card">
+        <div class="card-title">Passengers</div>
+        <div class="note">Click a seat, then click Assign.</div>
+
+        <div class="passengers">
+          {% for idx,name in passengers %}
+            <div class="p-row">
+              <div class="p-name">{{ name }}</div>
+              <input type="hidden" name="seat_{{ idx }}" id="seat_{{ idx }}">
+              <div class="p-seat" id="label_{{ idx }}">Not selected</div>
+              <button class="assign" type="button" data-idx="{{ idx }}">Assign</button>
+            </div>
+          {% endfor %}
+        </div>
+
+        <div class="actions">
+          <button type="submit" class="btn-primary">Continue to Payment</button>
+        </div>
+      </section>
+
+    </form>
+  </div>
+</div>
+
+<script>
+  // =============================
+  // Local selection + assignment
+  // =============================
+  let pickedSeat = null;
+
+  function clearPicked() {
+    document.querySelectorAll('.seat.is-picked').forEach(el => el.classList.remove('is-picked'));
+    pickedSeat = null;
+  }
+
+  function currentlySelectedSeats() {
+    const seats = new Set();
+    document.querySelectorAll('input[type="hidden"][id^="seat_"]').forEach(i => {
+      if (i.value) seats.add(i.value);
+    });
+    return seats;
+  }
+
+  function refreshSelectedClasses() {
+    const selected = currentlySelectedSeats();
+    document.querySelectorAll('.seat').forEach(btn => {
+      if (btn.classList.contains('is-booked') || btn.classList.contains('is-reserved')) return;
+      btn.classList.toggle('is-selected', selected.has(btn.dataset.seat));
+    });
+  }
+
+  document.querySelectorAll('.seat').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (btn.classList.contains('is-booked') || btn.classList.contains('is-reserved')) return;
+      clearPicked();
+      pickedSeat = btn.dataset.seat;
+      btn.classList.add('is-picked');
+    });
+  });
+
+  document.querySelectorAll('.assign').forEach(a => {
+    a.addEventListener('click', () => {
+      const idx = a.dataset.idx;
+
+      if (!pickedSeat) {
+        alert('First select a seat from the map.');
+        return;
+      }
+
+      const selected = currentlySelectedSeats();
+      if (selected.has(pickedSeat)) {
+        alert('This seat is already assigned. Choose another seat.');
+        return;
+      }
+
+      const input = document.getElementById('seat_' + idx);
+      const label = document.getElementById('label_' + idx);
+
+      input.value = pickedSeat;
+      label.textContent = pickedSeat;
+
+      clearPicked();
+      refreshSelectedClasses();
+    });
+  });
+
+  // =============================
+  // Live seat refresh (polling)
+  // =============================
+  async function refreshSeatStates(){
+    try{
+      const res = await fetch("{% url 'bookings:seat_status_api' flight.id %}");
+      const data = await res.json();
+
+      const selected = currentlySelectedSeats();
+
+      data.seats.forEach(item=>{
+        const btn = document.querySelector(`.seat[data-seat="${item.seat}"]`);
+        if(!btn) return;
+
+        // reset state classes (do NOT remove is-picked/is-selected here)
+        btn.classList.remove("is-booked","is-reserved","is-mine");
+
+        if(item.state === "booked"){
+          btn.classList.add("is-booked");
+          btn.disabled = true;
+        }
+        else if(item.state === "reserved_other"){
+          btn.classList.add("is-reserved");
+          btn.disabled = true;
+        }
+        else if(item.state === "reserved_me"){
+          btn.classList.add("is-mine");
+          btn.disabled = false;
+        }
+        else{
+          btn.disabled = false;
+        }
+
+        // keep selected seats black
+        btn.classList.toggle("is-selected", selected.has(item.seat));
+      });
+
+    }catch(e){
+      // ignore
+    }
+  }
+
+  refreshSelectedClasses();
+  refreshSeatStates();
+  setInterval(refreshSeatStates, 4000);
+</script>
+
+{% endblock %}

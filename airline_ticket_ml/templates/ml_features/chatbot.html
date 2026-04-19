@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block title %}AI Assistant | Flight{% endblock %}
+
+{% block content %}
+<div style="max-width:900px;margin:20px auto;padding:0 12px;">
+  <div style="background:#fff;border:1px solid #eee;border-radius:18px;box-shadow:0 10px 28px rgba(0,0,0,0.06);overflow:hidden;">
+    <div style="padding:14px 16px;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center;">
+      <div>
+        <div style="font-weight:900;">AI Chat Assistant</div>
+        <div style="font-size:12px;color:#666;">Try: “suggest cheap flights”, “best time to book”, “delay help”</div>
+      </div>
+    </div>
+
+    <div id="chatBox" style="height:360px;overflow:auto;padding:14px;background:#fafafa;"></div>
+
+    <form id="chatForm" style="display:flex;gap:10px;padding:12px;border-top:1px solid #eee;background:#fff;">
+      {% csrf_token %}
+      <input id="msg" type="text" placeholder="Type your question..." style="flex:1;padding:10px 12px;border:1px solid #ddd;border-radius:12px;outline:none;" />
+      <button type="submit" style="border:none;background:#111;color:#fff;border-radius:12px;padding:10px 14px;font-weight:800;">Send</button>
+    </form>
+  </div>
+</div>
+
+<script>
+  const box = document.getElementById('chatBox');
+  function addBubble(text, who){
+    const wrap = document.createElement('div');
+    wrap.style.display='flex';
+    wrap.style.justifyContent = who==='me' ? 'flex-end' : 'flex-start';
+    wrap.style.margin='8px 0';
+    const b = document.createElement('div');
+    b.textContent = text;
+    b.style.maxWidth='78%';
+    b.style.whiteSpace='pre-wrap';
+    b.style.padding='10px 12px';
+    b.style.borderRadius='14px';
+    b.style.border='1px solid #eee';
+    b.style.background = who==='me' ? '#111' : '#fff';
+    b.style.color = who==='me' ? '#fff' : '#111';
+    wrap.appendChild(b);
+    box.appendChild(wrap);
+    box.scrollTop = box.scrollHeight;
+  }
+
+  addBubble('Hi! Ask me about fare trend, cheap recommendations, delay prediction, or tickets.', 'bot');
+
+  document.getElementById('chatForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const msg = document.getElementById('msg');
+    const text = msg.value.trim();
+    if(!text) return;
+    addBubble(text, 'me');
+    msg.value='';
+
+    const csrf = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
+    const form = new FormData();
+    form.append('csrfmiddlewaretoken', csrf);
+    form.append('message', text);
+    const res = await fetch('', { method:'POST', body: form });
+    const data = await res.json();
+    addBubble(data.reply || 'Sorry, something went wrong.', 'bot');
+  });
+</script>
+
+{% endblock %}

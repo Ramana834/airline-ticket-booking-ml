@@ -1,0 +1,212 @@
+*{ box-sizing:border-box; }
+body{
+  margin:0;
+  font-family: Arial, Helvetica, sans-serif;
+  background:#f3f3f3;
+  color:#222;
+}
+
+/* TOP NAV */
+.top-nav{
+  height:56px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 18px;
+  border-bottom:1px solid #eee;
+  background:#fff;
+}
+.brand{ display:flex; align-items:center; gap:10px; }
+.logo-box{
+  display:inline-flex;
+  width:28px; height:28px;
+  align-items:center; justify-content:center;
+  border-radius:6px;
+  background:#e53935;
+  color:#fff;
+  font-size:14px;
+}
+.brand-text{
+  font-weight:700;
+  letter-spacing:1px;
+  color:#e53935;
+}
+.menu{ display:flex; gap:18px; }
+.menu a{
+  text-decoration:none;
+  color:#666;
+  font-size:14px;
+}
+.menu a.active{ color:#111; font-weight:600; }
+
+/* ACCOUNT */
+.account{ position:relative; }
+.acc-btn{
+  background:#fff;
+  border:1px solid #ddd;
+  padding:8px 12px;
+  border-radius:8px;
+  cursor:pointer;
+  font-weight:600;
+  color:#444;
+}
+.acc-menu{
+  position:absolute;
+  right:0;
+  top:42px;
+  width:160px;
+  background:#fff;
+  border:1px solid #eee;
+  border-radius:10px;
+  box-shadow:0 10px 20px rgba(0,0,0,0.12);
+  padding:8px;
+  display:none;
+  z-index:999;
+}
+.acc-menu.show{ display:block; }
+.acc-menu a{
+  display:block;
+  padding:10px;
+  border-radius:8px;
+  text-decoration:none;
+  color:#222;
+  font-size:14px;
+}
+.acc-menu a:hover{ background:#f3f3f3; }
+
+/* SUMMARY BAR */
+.summary-bar{
+  background:linear-gradient(90deg,#e53935,#ff7043);
+  color:#fff;
+}
+.summary-inner{
+  max-width:1200px;
+  margin:auto;
+  display:flex;
+  align-items:center;
+  gap:24px;
+  padding:16px 18px;
+}
+.route .small,.meta .small{ font-size:11px; opacity:.9; }
+.route .big,.meta .big{ font-size:16px; font-weight:700; }
+.arrow{ font-size:20px; }
+.btn-outline{
+  margin-left:auto;
+  padding:8px 14px;
+  border:1px solid #fff;
+  border-radius:20px;
+  color:#fff;
+  text-decoration:none;
+  font-size:13px;
+}
+
+/* MAIN */
+.container{
+  max-width:1200px;
+  margin:20px auto;
+  display:flex;
+  gap:20px;
+  padding:0 12px;
+}
+
+/* FILTER */
+.filters{
+  width:260px;
+  background:#fff;
+  border-radius:12px;
+  padding:16px;
+}
+.filters h3{ margin:0 0 12px; }
+.filter-box{ margin-bottom:18px; }
+.filter-box h4{ margin:0 0 10px; font-size:14px; }
+.range{ width:100%; }
+.range-values{
+  display:flex;
+  justify-content:space-between;
+  font-size:13px;
+  margin-top:6px;
+}
+.selected-row{ margin-top:6px; font-size:13px; }
+.chips{ display:flex; flex-wrap:wrap; gap:8px; }
+.chip{
+  border:1px solid #ddd;
+  background:#fff;
+  padding:6px 10px;
+  border-radius:20px;
+  font-size:12px;
+  cursor:pointer;
+}
+.chip.active{
+  background:#e53935;
+  color:#fff;
+  border-color:#e53935;
+}
+.reset{
+  display:inline-block;
+  margin-top:10px;
+  font-size:13px;
+  color:#e53935;
+  text-decoration:none;
+}
+
+/* RESULTS */
+.results{ flex:1; }
+.results-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:10px 12px;
+  font-size:13px;
+  color:#666;
+}
+.results-head .cols{ display:flex; gap:80px; }
+.sort-select{
+  margin-left:8px;
+  padding:8px 10px;
+  border:1px solid #e5e5e5;
+  border-radius:10px;
+  outline:none;
+  background:#fff;
+  font-size:13px;
+}
+
+/* CARD */
+.flight-card{
+  background:#fff;
+  border-radius:14px;
+  padding:16px;
+  margin-bottom:14px;
+  display:flex;
+  align-items:center;
+  gap:20px;
+  box-shadow:0 4px 10px rgba(0,0,0,0.05);
+}
+.airline{ width:160px; }
+.airline-name{ font-weight:700; }
+.time{ text-align:center; }
+.time .t{ font-size:18px; font-weight:700; }
+.time .city{ font-size:12px; color:#666; }
+.dash{ font-size:20px; color:#ccc; }
+.price{ font-size:18px; font-weight:700; margin-left:auto; }
+.book{
+  margin-left:20px;
+  padding:10px 16px;
+  background:#e53935;
+  color:#fff;
+  border-radius:22px;
+  text-decoration:none;
+  font-size:14px;
+}
+.empty{
+  padding:30px;
+  text-align:center;
+  color:#777;
+}
+
+/* Responsive */
+@media(max-width:900px){
+  .container{ flex-direction:column; }
+  .filters{ width:100%; }
+  .flight-card{ flex-wrap:wrap; }
+  .price{ margin-left:0; }
+}

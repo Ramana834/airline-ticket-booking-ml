@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Booking Confirmed{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/success.css' %}">
+
+<div class="success-wrapper">
+  <div class="success-card">
+
+    <div class="success-animation">
+      <svg class="checkmark" viewBox="0 0 52 52">
+        <circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none"/>
+        <path class="checkmark-check" fill="none" d="M14 27l7 7 16-16"/>
+      </svg>
+    </div>
+
+    <h2>Booking Confirmed</h2>
+    <p class="message">Congratulations! Your flight booking is confirmed.</p>
+
+    <div class="ref-box">
+      <div>
+        <span>Booking Ref:</span>
+        <b>#{{ booking_id }}</b>
+      </div>
+      <div class="route">
+        {{ origin_code }} → {{ dest_code }}
+      </div>
+    </div>
+
+    <!-- ✅ OUTBOUND Ticket -->
+    <a class="btn-primary" href="{% url 'bookings:ticket' booking_id %}">
+      View Outbound Ticket
+    </a>
+
+    <!-- ✅ RETURN Ticket (only if round trip) -->
+    {% if return_booking_id %}
+      <a class="btn-secondary" href="{% url 'bookings:ticket' return_booking_id %}">
+        View Return Ticket
+      </a>
+    {% endif %}
+
+  </div>
+</div>
+{% endblock %}

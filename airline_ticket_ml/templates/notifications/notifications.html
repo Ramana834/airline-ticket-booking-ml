@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% block title %}Notifications | Flight{% endblock %}
+{% block content %}
+
+<div style="max-width:900px;margin:20px auto;padding:0 16px;">
+
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+    <h2 style="margin:0;">Alerts & Notifications</h2>
+
+    <div style="display:flex;gap:10px;align-items:center;">
+      <a href="{% url 'notifications:check_now' %}"
+         style="text-decoration:none;background:#111;color:#fff;padding:10px 14px;border-radius:10px;font-weight:700;">
+        Check Now
+      </a>
+
+      <a href="{% url 'notifications:mark_all_read' %}"
+         style="text-decoration:none;color:#e53935;font-weight:700;">
+        Mark all read
+      </a>
+    </div>
+  </div>
+
+  <div style="background:#fff;border:1px solid #eee;border-radius:14px;padding:16px;margin-bottom:14px;">
+    <h3 style="margin:0 0 10px;">My Active Alerts</h3>
+
+    {% if alerts %}
+      {% for a in alerts %}
+        <div style="padding:12px;border:1px solid #f1f1f1;border-radius:12px;margin-bottom:10px;">
+          <div style="font-weight:800;">
+            {{ a.origin }} → {{ a.destination }}
+            <span style="color:#888;font-weight:600;">| {{ a.depart_date }}</span>
+          </div>
+
+          <div style="color:#666;font-size:14px;margin-top:6px;">
+            {% if a.target_price %}
+              Target: <b>₹{{ a.target_price }}</b>
+            {% else %}
+              Target: <b>{{ a.threshold_percent }}% drop</b>
+            {% endif %}
+            • Status:
+            {% if a.is_active %}
+              <span style="color:#2e7d32;font-weight:700;">Active</span>
+            {% else %}
+              <span style="color:#999;font-weight:700;">Inactive</span>
+            {% endif %}
+          </div>
+        </div>
+      {% endfor %}
+    {% else %}
+      <div style="color:#777;">No alerts created yet.</div>
+    {% endif %}
+  </div>
+
+  <div style="background:#fff;border:1px solid #eee;border-radius:14px;padding:16px;">
+    <h3 style="margin:0 0 10px;">Notifications (Price + Delay)</h3>
+
+    {% if notifications %}
+      {% for n in notifications %}
+        <div style="padding:14px;border:1px solid #f1f1f1;border-radius:12px;margin-bottom:10px;">
+          <div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start;">
+
+            <div>
+              <div style="font-weight:800;">{{ n.title }}</div>
+              <div style="color:#555;margin-top:6px;white-space:pre-line;">{{ n.message }}</div>
+              <div style="color:#999;font-size:12px;margin-top:8px;">{{ n.created_at }}</div>
+
+              {% if n.booking_url %}
+                <a href="{{ n.booking_url }}"
+                   style="display:inline-block;margin-top:10px;background:#111;color:#fff;padding:8px 14px;border-radius:10px;text-decoration:none;font-weight:700;">
+                  {% if n.category == "price" %}
+                    Book Now
+                  {% else %}
+                    View Flight
+                  {% endif %}
+                </a>
+              {% endif %}
+            </div>
+
+            <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end;">
+              {% if n.category == "delay" %}
+                <span style="background:#1976d2;color:#fff;font-size:12px;padding:6px 10px;border-radius:999px;">DELAY</span>
+              {% elif n.category == "price" %}
+                <span style="background:#2e7d32;color:#fff;font-size:12px;padding:6px 10px;border-radius:999px;">PRICE</span>
+              {% endif %}
+
+              {% if not n.is_read %}
+                <span style="background:#e53935;color:#fff;font-size:12px;padding:6px 10px;border-radius:999px;">NEW</span>
+
+                <a href="{% url 'notifications:read' n.id %}"
+                   style="text-decoration:none;background:#111;color:#fff;font-size:12px;padding:8px 12px;border-radius:8px;">
+                  Mark read
+                </a>
+              {% endif %}
+            </div>
+
+          </div>
+        </div>
+      {% endfor %}
+    {% else %}
+      <div style="color:#777;">No notifications yet.</div>
+    {% endif %}
+  </div>
+
+</div>
+
+{% endblock %}

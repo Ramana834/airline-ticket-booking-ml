@@ -1,0 +1,188 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Payment | Flight{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/payment.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/payment.css' %}">
+
+<div class="pay-wrap">
+  <div class="pay-grid">
+
+    <div class="left-col">
+
+      <div class="card-container">
+        <div class="credit-card" id="creditCard">
+
+          <!-- FRONT -->
+          <div class="card-front">
+            <div class="chip"></div>
+            <div class="card-brand" id="cardBrand">CARD</div>
+
+            <div class="card-number" id="cardNumberDisplay">0000 0000 0000 0000</div>
+
+            <div class="card-details">
+              <div>
+                <small>Card Holder</small>
+                <div class="val" id="cardNameDisplay">YOUR NAME</div>
+              </div>
+              <div style="text-align:right;">
+                <small>Expires</small>
+                <div class="val" id="cardExpiryDisplay">MM/YY</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- BACK -->
+          <div class="card-back">
+            <div class="black-strip"></div>
+
+            <div class="sig-row">
+              <div class="signature"></div>
+
+              <div class="cvv-area">
+                <div class="cvv-label">CVV</div>
+                <div class="cvv-box" id="cardCvvDisplay">***</div>
+              </div>
+            </div>
+
+            <div class="back-note">Authorized Signature</div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="summary">
+        <div class="sum-title">Payment Summary</div>
+        <div class="sum-row"><span>Passengers</span><b>{{ passenger_count }}</b></div>
+        <div class="sum-row"><span>Seat Class</span><b>{{ seat_class|title }}</b></div>
+        <div class="sum-row"><span>Base Fare (Outbound)</span><b>₹{{ outbound_base }}</b></div>
+        {% if has_return %}
+          <div class="sum-row"><span>Base Fare (Return)</span><b>₹{{ return_base }}</b></div>
+        {% endif %}
+        <div class="sum-row"><span>Charges (per passenger)</span><b>₹{{ charges }}</b></div>
+
+        <div class="sum-total">
+          <span>Total Amount</span>
+          <b>₹{{ amount }}</b>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT -->
+    <div class="pay-form">
+      <div class="form-head">
+        <div class="h1">Secure Card Payment</div>
+        <div class="h2">Your transaction is protected.</div>
+      </div>
+
+      <form method="POST">
+        {% csrf_token %}
+
+        <div class="field">
+          <label>Card Number</label>
+          <input type="text" id="card_number" name="card_number" maxlength="19" inputmode="numeric"
+                 placeholder="1234 5678 9012 3456" required>
+        </div>
+
+        <div class="field">
+          <label>Card Holder Name</label>
+          <input type="text" id="card_name" name="card_name" placeholder="Name on card" required>
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label>Exp Month</label>
+            <select id="exp_month" name="exp_month" required>
+              {% for m in month_range %}
+                <option value="{{ m }}">{{ m }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="field">
+            <label>Exp Year</label>
+            <select id="exp_year" name="exp_year" required>
+              {% for y in year_range %}
+                <option value="{{ y }}">{{ y }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="field">
+            <label>CVV</label>
+            <input type="password" id="cvv" name="cvv" maxlength="3" inputmode="numeric" placeholder="123" required>
+          </div>
+        </div>
+
+        <button class="btn-pay" type="submit" id="payBtn" disabled>Pay ₹{{ amount }}</button>
+        <div class="small-note">Tip: Use test data only. Real payment gateway integration requires Razorpay/Stripe.</div>
+      </form>
+    </div>
+
+  </div>
+</div>
+
+<script>
+(function(){
+  const card = document.getElementById("creditCard");
+  const num = document.getElementById("card_number");
+  const name = document.getElementById("card_name");
+  const mm = document.getElementById("exp_month");
+  const yy = document.getElementById("exp_year");
+  const cvv = document.getElementById("cvv");
+
+  const numView = document.getElementById("cardNumberDisplay");
+  const nameView = document.getElementById("cardNameDisplay");
+  const expView = document.getElementById("cardExpiryDisplay");
+  const cvvView = document.getElementById("cardCvvDisplay");
+  const brandView = document.getElementById("cardBrand");
+
+  function detectBrand(v){
+    v = (v||"").replace(/\s/g,'');
+    if(v.startsWith("4")) return "VISA";
+    if(/^5[1-5]/.test(v)) return "MASTERCARD";
+    if(/^3[47]/.test(v)) return "AMEX";
+    if(v.startsWith("6")) return "RUPAY";
+    return "CARD";
+  }
+  function formatCardNumber(v){
+    v = (v||"").replace(/\D/g,'').slice(0,16);
+    return (v.match(/.{1,4}/g) || []).join(" ");
+  }
+  function updateExpiry(){
+    const m = (mm.value || "MM").toString().padStart(2,"0");
+    const y = (yy.value || "YY").toString();
+    expView.textContent = m + "/" + (y.length >= 2 ? y.slice(-2) : "YY");
+  }
+
+  num.addEventListener("input", () => {
+    num.value = formatCardNumber(num.value);
+    numView.textContent = num.value || "0000 0000 0000 0000";
+    brandView.textContent = detectBrand(num.value);
+  });
+
+  name.addEventListener("input", () => {
+    const v = (name.value || "").toUpperCase().slice(0,22);
+    name.value = v;
+    nameView.textContent = v || "YOUR NAME";
+  });
+
+  mm.addEventListener("change", updateExpiry);
+  yy.addEventListener("change", updateExpiry);
+  updateExpiry();
+
+  cvv.addEventListener("focus", () => card.classList.add("flip"));
+  cvv.addEventListener("blur",  () => card.classList.remove("flip"));
+  cvv.addEventListener("input", () => {
+    cvv.value = (cvv.value||"").replace(/\D/g,'').slice(0,3);
+    cvvView.textContent = cvv.value ? cvv.value.replace(/./g,"•") : "***";
+  });
+})();
+</script>
+
+{% endblock %}
